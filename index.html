@@ -11,13 +11,20 @@
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+  <!-- Fond animé -->
+  <canvas id="bg"></canvas>
 
-  <!-- inclure le header -->
-  <iframe src="header.html"
-          frameborder="0"
-          scrolling="no"
-          style="width:100%; height: auto; border:none; display:block;"></iframe>
+  <!-- Language switcher FR/EN -->
+  <div id="lang-switch">
+    <button id="btn-fr" class="active">🇫🇷</button>
+    <button id="btn-en">🇬🇧</button>
+  </div>
 
+  <!-- Hero -->
+  <header class="hero">
+    <h1 class="hero-name">Hugo Magret</h1>
+    <p id="hero-tagline" class="hero-tagline">Coder le futur, une ligne à la fois.</p>
+  </header>
 
   <!-- Console fixe -->
   <section class="console-container">
@@ -74,12 +81,28 @@
 
     </section>
 
-    <!-- inclure le footer -->
-    <iframe src="footer.html"
-          frameborder="0"
-          scrolling="no"
-          style="width:100%; height: auto; border:none; display:block; margin-top:20px;"></iframe>
+
+  <!-- Footer fixe -->
+  <footer>
+    <div class="footer-left">
+      Hugo Magret – 2025 All rights reserved
+    </div>
+    <nav class="footer-center circle-menu">
+        <a href="html/projets.html" class="nav-item"><i class="fas fa-folder-open"></i></a>
+        <a href="html/cv.html" class="nav-item"><i class="fas fa-file-alt"></i></a>
+        <a href="index.html" class="nav-item"><i class="fas fa-home"></i></a>
+        <a href="html/about.html" class="nav-item"><i class="fas fa-user"></i></a>
+        <a href="html/contact.html" class="nav-item"><i class="fas fa-envelope"></i></a>
+    </nav>
 
 
-  </body>
+    <div class="footer-right social">
+      <a href="https://www.linkedin.com/in/hugo-magret-384429269" target="_blank" rel="noopener"><i class="fab fa-linkedin"></i></a>
+      <a href="https://github.com/HugoMagret" target="_blank" rel="noopener"><i class="fab fa-github"></i></a>
+    </div>
+  </footer>
+
+  <!-- Script -->
+  <script src="js/script.js"></script>
+</body>
 </html>
