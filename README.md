@@ -4,7 +4,7 @@ Site personnel hébergé via GitHub Pages
 URL live : https://hugomagret.github.io
 
 ## À propos  
-Développeur full-stack passionné par les technologies web modernes.  
+Développeur full-stack passionné par les technologies modernes.  
 Ce portfolio présente mes compétences, mes projets et mon CV.
 
 ## Structure  
@@ -16,8 +16,6 @@ Ce portfolio présente mes compétences, mes projets et mon CV.
 
 ## Technologies  
 - HTML5, CSS3, JavaScript  
-- Canvas pour effets graphiques  
-- Typographie variable (variable fonts)  
 - Animation console simulative
 
 ## Liens  
