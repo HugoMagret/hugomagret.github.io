@@ -21,17 +21,34 @@ canvas#bg {
 
 /* Lang switch */
 #lang-switch {
-  position: absolute; top:20px; right:20px;
-  display: flex; gap:8px; z-index:10;
+  position: fixed;
+  top: 24px;
+  right: 32px;
+  display: flex;
+  gap: 12px;
+  z-index: 100;
 }
-#lang-switch button {
-  background: transparent; border: none;
-  font-size:1.5rem; cursor:pointer; opacity:0.7;
-  transition: opacity .2s;
+.lang-btn {
+  background: rgba(0,255,255,0.08);
+  border: 2px solid var(--accent);
+  border-radius: 50%;
+  font-size: 2rem;
+  width: 48px;
+  height: 48px;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: background .2s, opacity .2s, transform .2s;
+  box-shadow: 0 2px 8px rgba(0,255,255,0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-#lang-switch button.active,
-#lang-switch button:hover {
-  opacity:1;
+.lang-btn.active,
+.lang-btn:hover {
+  background: var(--accent);
+  color: #000;
+  opacity: 1;
+  transform: scale(1.1);
 }
 
 /* Hero */
@@ -67,10 +84,7 @@ canvas#bg {
 .red{background:#FF5F56;} .yellow{background:#FFBD2E;} .green{background:#27C93F;}
 .console-body {
   padding:10px;
-  height:auto;
   min-height:200px;
-  max-height:300px;
-  overflow-y:auto;
   color:var(--fg);
   font-size:0.9rem;
   line-height:1.6;
