@@ -28,35 +28,37 @@ resize();
 // 2. Console typing with multiple colors & lines
 const cb = document.getElementById('console-body'),
       linesFR = [
-  "> Initialisation de l'environnement de développement...",
-  "✔ Compilation C/C++ réussie.",
-  "✔ Déploiement Docker : conteneurs up.",
-  "✔ Services PHP, Python & OCaml lancés.",
-  "ℹ Base de données SQL connectée.",
-  "⚙ Ionic & Android prêts à coder.",
-  "🚀 Pipeline CI/CD (Jenkins) opérationnel.",
-  "🤖 Apprentissage en continu activé."
+  "> hugo@dev:~$ whoami",
+  "Développeur Full-Stack | Étudiant en Informatique",
+  "> hugo@dev:~$ cat passions.txt",
+  "💻 Résolution de problèmes complexes",
+  "🎯 Architecture logicielle & optimisation",
+  "🌐 Technologies web modernes & DevOps",
+  "> hugo@dev:~$ ./deploy_future.sh",
+  "🚀 Transformation d'idées en solutions concrètes...",
+  "✨ Innovation en cours..."
 ], linesEN = [
-  "> Booting up development environment...",
-  "✔ C/C++ compilation succeeded.",
-  "✔ Docker deployment: containers up.",
-  "✔ PHP, Python & OCaml services started.",
-  "ℹ SQL database connected.",
-  "⚙ Ionic & Android ready to code.",
-  "🚀 CI/CD pipeline (Jenkins) is live.",
-  "🤖 Continuous learning enabled."
+  "> hugo@dev:~$ whoami",
+  "Full-Stack Developer | Computer Science Student",
+  "> hugo@dev:~$ cat passions.txt",
+  "💻 Solving complex problems",
+  "🎯 Software architecture & optimization",
+  "🌐 Modern web technologies & DevOps",
+  "> hugo@dev:~$ ./deploy_future.sh",
+  "🚀 Turning ideas into concrete solutions...",
+  "✨ Innovation in progress..."
 ];
 function typeLines(lines) {
   cb.innerHTML = '';
   lines.forEach((txt,i) => {
     setTimeout(()=>{
       const div = document.createElement('div');
-      // première ligne en cyan, les ✔ en vert, ℹ en bleu, ⚙ en orange, 🚀 en magenta
+      // coloration selon le contenu
       if (txt.startsWith('>')) div.style.color = '#00FFFF';
-      else if (txt.includes('✔')) div.style.color = '#28A745';
-      else if (txt.includes('ℹ')) div.style.color = '#17A2B8';
-      else if (txt.includes('⚙')) div.style.color = '#FFC107';
+      else if (txt.includes('💻') || txt.includes('🎯') || txt.includes('🌐')) div.style.color = '#28A745';
       else if (txt.includes('🚀')) div.style.color = '#E83E8C';
+      else if (txt.includes('✨')) div.style.color = '#FFC107';
+      else if (txt.includes('Développeur') || txt.includes('Developer')) div.style.color = '#00FFFF';
       else div.style.color = '#D1D1D1';
       cb.appendChild(div);
       let j=0;
@@ -71,10 +73,19 @@ function typeLines(lines) {
 }
 
 // 3. Active nav-item selon la page
-document.querySelectorAll('.nav-item').forEach(a => {
-  if (a.getAttribute('href') === location.pathname.split('/').pop()) {
-    a.classList.add('active');
-  }
+document.addEventListener('DOMContentLoaded', () => {
+  const currentPage = location.pathname.split('/').pop() || 'index.html';
+  document.querySelectorAll('.nav-item').forEach(a => {
+    const href = a.getAttribute('href');
+    const hrefPage = href.split('/').pop();
+    
+    // Vérifier si c'est la page actuelle
+    if (hrefPage === currentPage || 
+        (currentPage === '' && hrefPage === 'index.html') ||
+        (currentPage === 'index.html' && hrefPage === 'index.html')) {
+      a.classList.add('active');
+    }
+  });
 });
 
 // 4. Switch FR/EN pour tagline, titre exp & console
@@ -83,22 +94,38 @@ const btnFR = document.getElementById('btn-fr'),
       tagline = document.getElementById('hero-tagline'),
       expTitle = document.querySelector('.expertise h2');
 
-btnFR.addEventListener('click', ()=>{
-  btnEN.classList.remove('active');
-  btnFR.classList.add('active');
-  tagline.textContent = 'Coder le futur, une ligne à la fois.';
-  expTitle.textContent = 'Compétences Techniques';
-  typeLines(linesFR);
-});
-btnEN.addEventListener('click', ()=>{
-  btnFR.classList.remove('active');
-  btnEN.classList.add('active');
-  tagline.textContent = 'Coding the future, one line at a time.';
-  expTitle.textContent = 'Technical Expertise';
-  typeLines(linesEN);
-});
+if (btnFR && btnEN) {
+  btnFR.addEventListener('click', ()=>{
+    btnEN.classList.remove('active');
+    btnFR.classList.add('active');
+    tagline.textContent = 'Coder le futur, une ligne à la fois.';
+    expTitle.textContent = 'Compétences Techniques';
+    typeLines(linesFR);
+  });
+  btnEN.addEventListener('click', ()=>{
+    btnFR.classList.remove('active');
+    btnEN.classList.add('active');
+    tagline.textContent = 'Coding the future, one line at a time.';
+    expTitle.textContent = 'Technical Expertise';
+    typeLines(linesEN);
+  });
+}
 
 // Init console + default langue
 window.addEventListener('load', ()=>{
-  typeLines(linesFR);
+  if (cb) typeLines(linesFR);
+  
+  // Vérifier le message de succès pour le formulaire de contact
+  const urlParams = new URLSearchParams(window.location.search);
+  const formMessage = document.getElementById('formMessage');
+  if (urlParams.get('success') === 'true' && formMessage) {
+    formMessage.textContent = '✓ Message envoyé avec succès ! Je vous répondrai bientôt.';
+    formMessage.className = 'form-message success';
+    formMessage.style.display = 'block';
+    
+    // Nettoyer l'URL
+    setTimeout(() => {
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }, 100);
+  }
 });

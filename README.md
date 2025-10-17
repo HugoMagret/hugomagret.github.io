@@ -22,8 +22,3 @@ Ce portfolio présente mes compétences, mes projets et mon CV.
 - LinkedIn : https://www.linkedin.com/in/hugo-magret-384429269  
 - GitHub : https://github.com/HugoMagret
 
-## Installation en local  
-```bash
-git clone https://github.com/HugoMagret/hugomagret.github.io.git
-cd hugomagret.github.io
-# ouvrez html/index.html dans votre navigateur
