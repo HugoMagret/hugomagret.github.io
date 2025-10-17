@@ -91,11 +91,11 @@ canvas#bg {
 }
 .icons-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-  gap: 40px 20px;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 50px 30px;
   justify-items: center;
   margin-top: 10px;
-  padding-bottom: 60px;
+  padding-bottom: 20px;
   max-width: 100%;
 }
 .icon {
@@ -567,9 +567,13 @@ footer {
   }
 }
 
+@media(max-width:900px) {
+  .icons-grid { grid-template-columns:repeat(4,1fr); gap: 40px 20px; }
+}
+
 @media(max-width:600px) {
-  .icons-grid { grid-template-columns:repeat(2,1fr); }
-  .console-body { height:150px; }
+  .icons-grid { grid-template-columns:repeat(3,1fr); gap: 35px 15px; }
+  .console-body { min-height:150px; }
   .nav-item { width:50px; height:50px; font-size:1.5rem; }
   .hero-name { font-size: 2rem; }
   .hero-tagline { font-size: 1rem; }
@@ -577,4 +581,6 @@ footer {
   .contact-form { padding: 25px; }
   footer { flex-direction: column; gap: 15px; padding: 15px; }
   .circle-menu { gap: 10px; }
+  .icon img { width: 45px; height: 45px; }
+  .icon i { font-size: 2.5rem !important; }
 }

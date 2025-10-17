@@ -25,73 +25,56 @@ resize();
   requestAnimationFrame(anim);
 })();
 
-// 2. Matrix effect before console
-function matrixEffect(callback) {
-  if (!cb) return callback();
-  
-  cb.style.backgroundColor = '#000';
-  const chars = 'ﾊﾐﾋｰｳｼﾅﾓﾆｻﾜﾂｵﾘｱﾎﾃﾏｹﾒｴｶｷﾑﾕﾗｾﾈｽﾀﾇﾍ01';
-  let matrixInterval;
-  let matrixCount = 0;
-  
-  matrixInterval = setInterval(() => {
-    const line = document.createElement('div');
-    line.style.color = '#0F0';
-    line.textContent = Array(60).fill(0).map(() => chars[Math.floor(Math.random() * chars.length)]).join('');
-    cb.appendChild(line);
-    matrixCount++;
-    
-    if (matrixCount > 8) {
-      clearInterval(matrixInterval);
-      setTimeout(() => {
-        cb.innerHTML = '';
-        cb.style.backgroundColor = '';
-        callback();
-      }, 500);
-    }
-  }, 80);
-}
-
-// Console typing with multiple colors & lines
+// 2. Console typing with multiple colors & lines
 const cb = document.getElementById('console-body'),
       linesFR = [
-  "> hugo@skynet:~$ whoami",
-  "root (Développeur qui se prend pour un hackeur)",
-  "> hugo@skynet:~$ sudo rm -rf --no-preserve-root /",
-  "😱 ERREUR: Vous avez failli supprimer l'univers !",
-  "> hugo@skynet:~$ cat /etc/motivation",
-  "☕ Café = true;",
-  "💻 Code = passion;",
-  "🐛 Bugs = features;",
-  "> hugo@skynet:~$ shutdown -h now",
-  "⚠️  Tentative de destruction du système détectée...",
-  "✅ Système protégé par l'ironie",
-  "> hugo@skynet:~$ echo 'Hello World' | cowsay",
-  "🐄 Meuuuh... Je code donc je suis",
-  "> hugo@skynet:~$ sudo make me a sandwich",
-  "🥪 Sandwich créé avec amour (et sudo)",
-  "> hugo@skynet:~$ ./deploy_portfolio.sh",
-  "🚀 Déploiement en cours...",
-  "✨ Portfolio chargé avec succès !"
+  "> hugo@portfolio:~$ ls -la /home/hugo/projects/",
+  "drwxr-xr-x 12 hugo dev  4096 Oct 17 16:42 .",
+  "drwxr-xr-x 15 hugo dev  4096 Oct 17 15:30 ..",
+  "drwxr-xr-x  8 hugo dev  4096 Oct 15 09:21 snake-ai-qlearning/",
+  "drwxr-xr-x  6 hugo dev  4096 Oct 10 14:33 wordpress-api-sync/",
+  "drwxr-xr-x  5 hugo dev  4096 Sep 28 11:45 ionic-mobile-app/",
+  "> hugo@portfolio:~$ cat skills.json | jq '.languages'",
+  '["Java", "JavaScript", "Python", "PHP", "C", "C++", "SQL"]',
+  "> hugo@portfolio:~$ git log --oneline --graph | head -3",
+  "* a3f5e2b (HEAD -> main) feat: AI integration with Mistral API",
+  "* 8c2d1a4 fix: JWT authentication workflow",
+  "* 6f9b8e7 refactor: WordPress REST API sync",
+  "> hugo@portfolio:~$ docker ps --format 'table {{.Names}}\t{{.Status}}'",
+  "NAMES               STATUS",
+  "wordpress-dev       Up 2 hours",
+  "mysql-db            Up 2 hours",
+  "> hugo@portfolio:~$ chmod +x deploy_portfolio.sh",
+  "> hugo@portfolio:~$ ./deploy_portfolio.sh",
+  "🚀 Initializing deployment...",
+  "✓ Building assets...",
+  "✓ Optimizing images...",
+  "✓ Deploying to GitHub Pages...",
+  "✨ Portfolio is now live at hugomagret.github.io"
 ], linesEN = [
-  "> hugo@skynet:~$ whoami",
-  "root (Developer who thinks he's a hacker)",
-  "> hugo@skynet:~$ sudo rm -rf --no-preserve-root /",
-  "😱 ERROR: You almost deleted the universe!",
-  "> hugo@skynet:~$ cat /etc/motivation",
-  "☕ Coffee = true;",
-  "💻 Code = passion;",
-  "🐛 Bugs = features;",
-  "> hugo@skynet:~$ shutdown -h now",
-  "⚠️  System destruction attempt detected...",
-  "✅ System protected by irony",
-  "> hugo@skynet:~$ echo 'Hello World' | cowsay",
-  "🐄 Mooo... I code therefore I am",
-  "> hugo@skynet:~$ sudo make me a sandwich",
-  "🥪 Sandwich created with love (and sudo)",
-  "> hugo@skynet:~$ ./deploy_portfolio.sh",
-  "🚀 Deployment in progress...",
-  "✨ Portfolio loaded successfully!"
+  "> hugo@portfolio:~$ ls -la /home/hugo/projects/",
+  "drwxr-xr-x 12 hugo dev  4096 Oct 17 16:42 .",
+  "drwxr-xr-x 15 hugo dev  4096 Oct 17 15:30 ..",
+  "drwxr-xr-x  8 hugo dev  4096 Oct 15 09:21 snake-ai-qlearning/",
+  "drwxr-xr-x  6 hugo dev  4096 Oct 10 14:33 wordpress-api-sync/",
+  "drwxr-xr-x  5 hugo dev  4096 Sep 28 11:45 ionic-mobile-app/",
+  "> hugo@portfolio:~$ cat skills.json | jq '.languages'",
+  '["Java", "JavaScript", "Python", "PHP", "C", "C++", "SQL"]',
+  "> hugo@portfolio:~$ git log --oneline --graph | head -3",
+  "* a3f5e2b (HEAD -> main) feat: AI integration with Mistral API",
+  "* 8c2d1a4 fix: JWT authentication workflow",
+  "* 6f9b8e7 refactor: WordPress REST API sync",
+  "> hugo@portfolio:~$ docker ps --format 'table {{.Names}}\t{{.Status}}'",
+  "NAMES               STATUS",
+  "wordpress-dev       Up 2 hours",
+  "mysql-db            Up 2 hours",
+  "> hugo@portfolio:~$ chmod +x deploy_portfolio.sh",
+  "> hugo@portfolio:~$ ./deploy_portfolio.sh",
+  "🚀 Initializing deployment...",
+  "✓ Building assets...",
+  "✓ Optimizing images...",
+  "✓ Deploying to GitHub Pages...",
+  "✨ Portfolio is now live at hugomagret.github.io"
 ];
 function typeLines(lines) {
   cb.innerHTML = '';
@@ -100,20 +83,21 @@ function typeLines(lines) {
       const div = document.createElement('div');
       // coloration selon le contenu
       if (txt.startsWith('>')) div.style.color = '#00FFFF';
-      else if (txt.includes('💻') || txt.includes('🎯') || txt.includes('🌐')) div.style.color = '#28A745';
+      else if (txt.startsWith('drwx') || txt.startsWith('*')) div.style.color = '#888';
+      else if (txt.includes('✓') || txt.includes('✨')) div.style.color = '#28A745';
       else if (txt.includes('🚀')) div.style.color = '#E83E8C';
-      else if (txt.includes('✨')) div.style.color = '#FFC107';
-      else if (txt.includes('Développeur') || txt.includes('Developer')) div.style.color = '#00FFFF';
+      else if (txt.includes('NAMES') || txt.includes('STATUS')) div.style.color = '#FFC107';
+      else if (txt.includes('[') && txt.includes(']')) div.style.color = '#9B59B6';
       else div.style.color = '#D1D1D1';
       cb.appendChild(div);
       let j=0;
       (function typeChar(){
         if (j < txt.length) {
           div.textContent += txt[j++];
-          setTimeout(typeChar, 30);
+          setTimeout(typeChar, 20);
         }
       })();
-    }, i * 400);
+    }, i * 200);
   });
 }
 
@@ -145,28 +129,20 @@ if (btnFR && btnEN) {
     btnFR.classList.add('active');
     tagline.textContent = 'Coder le futur, une ligne à la fois.';
     if (expTitle) expTitle.textContent = 'Compétences Techniques';
-    if (cb) {
-      matrixEffect(() => typeLines(linesFR));
-    }
+    if (cb) typeLines(linesFR);
   });
   btnEN.addEventListener('click', ()=>{
     btnFR.classList.remove('active');
     btnEN.classList.add('active');
     tagline.textContent = 'Coding the future, one line at a time.';
     if (expTitle) expTitle.textContent = 'Technical Expertise';
-    if (cb) {
-      matrixEffect(() => typeLines(linesEN));
-    }
+    if (cb) typeLines(linesEN);
   });
 }
 
 // Init console + default langue
 window.addEventListener('load', ()=>{
-  if (cb) {
-    matrixEffect(() => {
-      typeLines(linesFR);
-    });
-  }
+  if (cb) typeLines(linesFR);
   
   // Vérifier le message de succès pour le formulaire de contact
   const urlParams = new URLSearchParams(window.location.search);
@@ -176,9 +152,9 @@ window.addEventListener('load', ()=>{
     formMessage.className = 'form-message success';
     formMessage.style.display = 'block';
     
-    // Nettoyer l'URL
+    // Redirection automatique vers l'accueil après 2 secondes
     setTimeout(() => {
-      window.history.replaceState({}, document.title, window.location.pathname);
-    }, 100);
+      window.location.href = '../index.html';
+    }, 2000);
   }
 });
