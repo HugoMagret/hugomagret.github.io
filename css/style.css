@@ -106,7 +106,7 @@ canvas#bg {
 .icons-grid {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  gap: 50px 30px;
+  gap: 32px 40px;
   justify-items: center;
   margin-top: 10px;
   padding-bottom: 20px;
