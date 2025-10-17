@@ -25,28 +25,73 @@ resize();
   requestAnimationFrame(anim);
 })();
 
-// 2. Console typing with multiple colors & lines
+// 2. Matrix effect before console
+function matrixEffect(callback) {
+  if (!cb) return callback();
+  
+  cb.style.backgroundColor = '#000';
+  const chars = 'ﾊﾐﾋｰｳｼﾅﾓﾆｻﾜﾂｵﾘｱﾎﾃﾏｹﾒｴｶｷﾑﾕﾗｾﾈｽﾀﾇﾍ01';
+  let matrixInterval;
+  let matrixCount = 0;
+  
+  matrixInterval = setInterval(() => {
+    const line = document.createElement('div');
+    line.style.color = '#0F0';
+    line.textContent = Array(60).fill(0).map(() => chars[Math.floor(Math.random() * chars.length)]).join('');
+    cb.appendChild(line);
+    matrixCount++;
+    
+    if (matrixCount > 8) {
+      clearInterval(matrixInterval);
+      setTimeout(() => {
+        cb.innerHTML = '';
+        cb.style.backgroundColor = '';
+        callback();
+      }, 500);
+    }
+  }, 80);
+}
+
+// Console typing with multiple colors & lines
 const cb = document.getElementById('console-body'),
       linesFR = [
-  "> hugo@dev:~$ whoami",
-  "Développeur Full-Stack | Étudiant en Informatique",
-  "> hugo@dev:~$ cat passions.txt",
-  "💻 Résolution de problèmes complexes",
-  "🎯 Architecture logicielle & optimisation",
-  "🌐 Technologies web modernes & DevOps",
-  "> hugo@dev:~$ ./deploy_future.sh",
-  "🚀 Transformation d'idées en solutions concrètes...",
-  "✨ Innovation en cours..."
+  "> hugo@skynet:~$ whoami",
+  "root (Développeur qui se prend pour un hackeur)",
+  "> hugo@skynet:~$ sudo rm -rf --no-preserve-root /",
+  "😱 ERREUR: Vous avez failli supprimer l'univers !",
+  "> hugo@skynet:~$ cat /etc/motivation",
+  "☕ Café = true;",
+  "💻 Code = passion;",
+  "🐛 Bugs = features;",
+  "> hugo@skynet:~$ shutdown -h now",
+  "⚠️  Tentative de destruction du système détectée...",
+  "✅ Système protégé par l'ironie",
+  "> hugo@skynet:~$ echo 'Hello World' | cowsay",
+  "🐄 Meuuuh... Je code donc je suis",
+  "> hugo@skynet:~$ sudo make me a sandwich",
+  "🥪 Sandwich créé avec amour (et sudo)",
+  "> hugo@skynet:~$ ./deploy_portfolio.sh",
+  "🚀 Déploiement en cours...",
+  "✨ Portfolio chargé avec succès !"
 ], linesEN = [
-  "> hugo@dev:~$ whoami",
-  "Full-Stack Developer | Computer Science Student",
-  "> hugo@dev:~$ cat passions.txt",
-  "💻 Solving complex problems",
-  "🎯 Software architecture & optimization",
-  "🌐 Modern web technologies & DevOps",
-  "> hugo@dev:~$ ./deploy_future.sh",
-  "🚀 Turning ideas into concrete solutions...",
-  "✨ Innovation in progress..."
+  "> hugo@skynet:~$ whoami",
+  "root (Developer who thinks he's a hacker)",
+  "> hugo@skynet:~$ sudo rm -rf --no-preserve-root /",
+  "😱 ERROR: You almost deleted the universe!",
+  "> hugo@skynet:~$ cat /etc/motivation",
+  "☕ Coffee = true;",
+  "💻 Code = passion;",
+  "🐛 Bugs = features;",
+  "> hugo@skynet:~$ shutdown -h now",
+  "⚠️  System destruction attempt detected...",
+  "✅ System protected by irony",
+  "> hugo@skynet:~$ echo 'Hello World' | cowsay",
+  "🐄 Mooo... I code therefore I am",
+  "> hugo@skynet:~$ sudo make me a sandwich",
+  "🥪 Sandwich created with love (and sudo)",
+  "> hugo@skynet:~$ ./deploy_portfolio.sh",
+  "🚀 Deployment in progress...",
+  "✨ Portfolio loaded successfully!"
 ];
 function typeLines(lines) {
   cb.innerHTML = '';
@@ -99,21 +144,29 @@ if (btnFR && btnEN) {
     btnEN.classList.remove('active');
     btnFR.classList.add('active');
     tagline.textContent = 'Coder le futur, une ligne à la fois.';
-    expTitle.textContent = 'Compétences Techniques';
-    typeLines(linesFR);
+    if (expTitle) expTitle.textContent = 'Compétences Techniques';
+    if (cb) {
+      matrixEffect(() => typeLines(linesFR));
+    }
   });
   btnEN.addEventListener('click', ()=>{
     btnFR.classList.remove('active');
     btnEN.classList.add('active');
     tagline.textContent = 'Coding the future, one line at a time.';
-    expTitle.textContent = 'Technical Expertise';
-    typeLines(linesEN);
+    if (expTitle) expTitle.textContent = 'Technical Expertise';
+    if (cb) {
+      matrixEffect(() => typeLines(linesEN));
+    }
   });
 }
 
 // Init console + default langue
 window.addEventListener('load', ()=>{
-  if (cb) typeLines(linesFR);
+  if (cb) {
+    matrixEffect(() => {
+      typeLines(linesFR);
+    });
+  }
   
   // Vérifier le message de succès pour le formulaire de contact
   const urlParams = new URLSearchParams(window.location.search);
