@@ -89,59 +89,33 @@ document.addEventListener('DOMContentLoaded', () => {
 const btnFR = document.getElementById('btn-fr'),
       btnEN = document.getElementById('btn-en'),
       tagline = document.getElementById('hero-tagline'),
-      skillsTitle = document.getElementById('skills-title'),
-      skillsLangTitle = document.getElementById('skills-lang-title'),
-      skillsFwTitle = document.getElementById('skills-fw-title'),
-      skillsToolsTitle = document.getElementById('skills-tools-title'),
-      skillsCloudTitle = document.getElementById('skills-cloud-title');
+      expTitle = document.querySelector('.expertise h2');
 
-const translations = {
-  fr: {
-    tagline: 'Coder le futur, une ligne à la fois.',
-    skillsTitle: 'Compétences Techniques',
-    skillsLangTitle: 'Langages de Programmation',
-    skillsFwTitle: 'Frameworks & Bibliothèques',
-    skillsToolsTitle: 'Outils & Plateformes',
-    skillsCloudTitle: 'Cloud & DevOps'
-  },
-  en: {
-    tagline: 'Coding the future, one line at a time.',
-    skillsTitle: 'Technical Skills',
-    skillsLangTitle: 'Programming Languages',
-    skillsFwTitle: 'Frameworks & Libraries',
-    skillsToolsTitle: 'Tools & Platforms',
-    skillsCloudTitle: 'Cloud & DevOps'
-  }
-};
-
-function setLanguage(lang) {
-  if (tagline) tagline.textContent = translations[lang].tagline;
-  if (skillsTitle) skillsTitle.textContent = translations[lang].skillsTitle;
-  if (skillsLangTitle) skillsLangTitle.textContent = translations[lang].skillsLangTitle;
-  if (skillsFwTitle) skillsFwTitle.textContent = translations[lang].skillsFwTitle;
-  if (skillsToolsTitle) skillsToolsTitle.textContent = translations[lang].skillsToolsTitle;
-  if (skillsCloudTitle) skillsCloudTitle.textContent = translations[lang].skillsCloudTitle;
-  if (cb) typeLines(lang === 'fr' ? linesFR : linesEN);
+function updateLanguage(lang) {
+  // Mettre à jour tous les titres avec data-fr et data-en
+  document.querySelectorAll('[data-fr][data-en]').forEach(el => {
+    el.textContent = lang === 'fr' ? el.getAttribute('data-fr') : el.getAttribute('data-en');
+  });
 }
 
 if (btnFR && btnEN) {
   btnFR.addEventListener('click', ()=>{
     btnEN.classList.remove('active');
     btnFR.classList.add('active');
-    setLanguage('fr');
+    tagline.textContent = 'Coder le futur, une ligne à la fois.';
+    if (expTitle) expTitle.textContent = 'Compétences Techniques';
+    if (cb) typeLines(linesFR);
+    updateLanguage('fr');
   });
   btnEN.addEventListener('click', ()=>{
     btnFR.classList.remove('active');
     btnEN.classList.add('active');
-    setLanguage('en');
+    tagline.textContent = 'Coding the future, one line at a time.';
+    if (expTitle) expTitle.textContent = 'Technical Expertise';
+    if (cb) typeLines(linesEN);
+    updateLanguage('en');
   });
 }
-
-// Init console + default langue
-window.addEventListener('load', ()=>{
-  setLanguage('fr');
-  // ...existing code...
-});
 
 // Init console + default langue
 window.addEventListener('load', ()=>{
