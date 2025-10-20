@@ -3,8 +3,19 @@ const canvas = document.getElementById('bg'),
       ctx = canvas.getContext('2d');
 let w,h,parts=[],n=80;
 
-// Palette de couleurs pour les particules
-const colors = ['#00FFFF', '#FF00FF', '#FFD700', '#00FF00', '#FF6B6B'];
+// Palette de 10 couleurs douces et harmonieuses
+const colors = [
+  '#00FFFF', // Cyan bleu (couleur de départ)
+  '#4FC3F7', // Bleu ciel doux
+  '#81C784', // Vert menthe
+  '#FFB74D', // Orange pêche
+  '#BA68C8', // Violet pastel
+  '#FF8A80', // Rose corail doux
+  '#64B5F6', // Bleu clair
+  '#AED581', // Vert pomme doux
+  '#FFD54F', // Jaune doux
+  '#9575CD'  // Lavande
+];
 
 function getRandomColor() {
   return colors[Math.floor(Math.random() * colors.length)];
@@ -19,7 +30,7 @@ function resize() {
       vx:(Math.random()-0.5)*0.5, 
       vy:(Math.random()-0.5)*0.5,
       radius: 2,
-      color: getRandomColor()
+      color: '#00FFFF' // Toutes démarrent en bleu cyan
     });
   }
 }
