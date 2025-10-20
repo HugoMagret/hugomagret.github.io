@@ -3,6 +3,13 @@ const canvas = document.getElementById('bg'),
       ctx = canvas.getContext('2d');
 let w,h,parts=[],n=80;
 
+// Palette de couleurs pour les particules
+const colors = ['#00FFFF', '#FF00FF', '#FFD700', '#00FF00', '#FF6B6B'];
+
+function getRandomColor() {
+  return colors[Math.floor(Math.random() * colors.length)];
+}
+
 function resize() {
   w=canvas.width=innerWidth; h=canvas.height=innerHeight; parts=[];
   for(let i=0;i<n;i++){
@@ -11,7 +18,8 @@ function resize() {
       y:Math.random()*h,
       vx:(Math.random()-0.5)*0.5, 
       vy:(Math.random()-0.5)*0.5,
-      radius: 2
+      radius: 2,
+      color: getRandomColor()
     });
   }
 }
@@ -24,6 +32,10 @@ function checkCollision(p1, p2) {
   const minDist = p1.radius + p2.radius;
   
   if (distance < minDist) {
+    // Changer les couleurs des deux particules après collision
+    p1.color = getRandomColor();
+    p2.color = getRandomColor();
+    
     // Calculer l'angle de collision
     const angle = Math.atan2(dy, dx);
     
@@ -86,11 +98,11 @@ resize();
     }
   }
   
-  // Dessiner les particules
+  // Dessiner les particules avec leur couleur
   parts.forEach(p=>{
     ctx.beginPath();
     ctx.arc(p.x, p.y, p.radius, 0, 2*Math.PI);
-    ctx.fillStyle='#00FFFF'; 
+    ctx.fillStyle=p.color; 
     ctx.fill();
   });
   
