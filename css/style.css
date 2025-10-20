@@ -101,10 +101,10 @@ canvas#bg {
 .icons-grid {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  gap: 80px 30px;
+  gap: 40px 15px;
   justify-items: center;
-  margin-top: 20px;
-  padding-bottom: 30px;
+  margin-top: 10px;
+  padding-bottom: 15px;
   max-width: 100%;
 }
 .icon {
