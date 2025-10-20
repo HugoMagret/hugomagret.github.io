@@ -103,8 +103,8 @@ canvas#bg {
   grid-template-columns: repeat(6, 1fr);
   gap: 40px 15px;
   justify-items: center;
-  margin-top: 10px;
-  padding-bottom: 30px;
+  margin-top: 15px;
+  padding-bottom: 40px;
   max-width: 100%;
 }
 .icon {
