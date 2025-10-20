@@ -1,27 +1,99 @@
-// 1. Canvas particles (inchangé)
+// 1. Canvas particles avec collision
 const canvas = document.getElementById('bg'),
       ctx = canvas.getContext('2d');
 let w,h,parts=[],n=80;
+
 function resize() {
   w=canvas.width=innerWidth; h=canvas.height=innerHeight; parts=[];
   for(let i=0;i<n;i++){
-    parts.push({ x:Math.random()*w, y:Math.random()*h,
-      vx:(Math.random()-0.5)*0.5, vy:(Math.random()-0.5)*0.5 });
+    parts.push({ 
+      x:Math.random()*w, 
+      y:Math.random()*h,
+      vx:(Math.random()-0.5)*0.5, 
+      vy:(Math.random()-0.5)*0.5,
+      radius: 2
+    });
   }
 }
+
+// Fonction pour détecter et gérer les collisions entre particules
+function checkCollision(p1, p2) {
+  const dx = p2.x - p1.x;
+  const dy = p2.y - p1.y;
+  const distance = Math.sqrt(dx * dx + dy * dy);
+  const minDist = p1.radius + p2.radius;
+  
+  if (distance < minDist) {
+    // Calculer l'angle de collision
+    const angle = Math.atan2(dy, dx);
+    
+    // Calculer les vitesses relatives
+    const sin = Math.sin(angle);
+    const cos = Math.cos(angle);
+    
+    // Rotation des vitesses
+    const vx1 = p1.vx * cos + p1.vy * sin;
+    const vy1 = p1.vy * cos - p1.vx * sin;
+    const vx2 = p2.vx * cos + p2.vy * sin;
+    const vy2 = p2.vy * cos - p2.vx * sin;
+    
+    // Échanger les vitesses (collision élastique)
+    const vx1Final = vx2;
+    const vx2Final = vx1;
+    
+    // Rotation inverse pour retrouver les vraies vitesses
+    p1.vx = vx1Final * cos - vy1 * sin;
+    p1.vy = vy1 * cos + vx1Final * sin;
+    p2.vx = vx2Final * cos - vy2 * sin;
+    p2.vy = vy2 * cos + vx2Final * sin;
+    
+    // Séparer les particules pour éviter qu'elles restent collées
+    const overlap = minDist - distance;
+    const separateX = (overlap / 2) * cos;
+    const separateY = (overlap / 2) * sin;
+    
+    p1.x -= separateX;
+    p1.y -= separateY;
+    p2.x += separateX;
+    p2.y += separateY;
+  }
+}
+
 window.addEventListener('resize', resize);
 resize();
+
 (function anim(){
   ctx.fillStyle='rgba(0,0,0,0.1)';
   ctx.fillRect(0,0,w,h);
+  
+  // Mettre à jour les positions
   parts.forEach(p=>{
     p.x+=p.vx; p.y+=p.vy;
-    if(p.x<0||p.x>w) p.vx*=-1;
-    if(p.y<0||p.y>h) p.vy*=-1;
-    ctx.beginPath();
-    ctx.arc(p.x,p.y,2,0,2*Math.PI);
-    ctx.fillStyle='#00FFFF'; ctx.fill();
+    
+    // Rebond sur les bords
+    if(p.x<p.radius || p.x>w-p.radius) p.vx*=-1;
+    if(p.y<p.radius || p.y>h-p.radius) p.vy*=-1;
+    
+    // Garder dans les limites
+    p.x = Math.max(p.radius, Math.min(w-p.radius, p.x));
+    p.y = Math.max(p.radius, Math.min(h-p.radius, p.y));
   });
+  
+  // Vérifier les collisions entre toutes les particules
+  for(let i=0; i<parts.length; i++) {
+    for(let j=i+1; j<parts.length; j++) {
+      checkCollision(parts[i], parts[j]);
+    }
+  }
+  
+  // Dessiner les particules
+  parts.forEach(p=>{
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.radius, 0, 2*Math.PI);
+    ctx.fillStyle='#00FFFF'; 
+    ctx.fill();
+  });
+  
   requestAnimationFrame(anim);
 })();
 
