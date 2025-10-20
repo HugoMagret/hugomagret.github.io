@@ -101,10 +101,11 @@ canvas#bg {
 .icons-grid {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  gap: 60px 20px;
+  row-gap: clamp(50px, 8vh, 100px);
+  column-gap: clamp(15px, 2vw, 30px);
   justify-items: center;
   margin-top: 20px;
-  padding-bottom: 10px;
+  padding-bottom: 20px;
   max-width: 100%;
 }
 .icon {
@@ -115,7 +116,8 @@ canvas#bg {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 10px;
+  min-height: 80px;
+  padding-bottom: 15px;
 }
 .icon img {
   width: 56px;
@@ -133,17 +135,18 @@ canvas#bg {
   filter: brightness(1) drop-shadow(0 0 10px var(--accent));
 }
 .icon:hover {
-  color:var(--accent); transform:scale(1.2);
+  color:var(--accent); transform:scale(1.15);
 }
 .icon:hover::after {
   content:attr(data-tooltip);
-  position:absolute; bottom:-45px; left:50%;
+  position:absolute; bottom:-35px; left:50%;
   transform:translateX(-50%);
   background:var(--accent); color:#000;
   padding:6px 12px; border-radius:5px;
-  font-size:0.8rem; white-space:nowrap;
-  z-index: 10;
+  font-size:0.75rem; white-space:nowrap;
+  z-index: 999;
   box-shadow: 0 2px 10px rgba(0,255,255,0.5);
+  pointer-events: none;
 }
 
 /* Footer */
@@ -582,16 +585,47 @@ footer {
   }
 }
 
+@media(max-width:1200px) {
+  .icons-grid { 
+    grid-template-columns:repeat(5,1fr); 
+    row-gap: clamp(45px, 7vh, 90px);
+    column-gap: clamp(12px, 1.8vw, 25px);
+  }
+  .icon { min-height: 75px; padding-bottom: 12px; }
+}
+
 @media(max-width:900px) {
-  .icons-grid { grid-template-columns:repeat(4,1fr); gap: 50px 15px; }
-  .icon { margin-bottom: 8px; }
+  .icons-grid { 
+    grid-template-columns:repeat(4,1fr); 
+    row-gap: clamp(40px, 6vh, 80px);
+    column-gap: clamp(10px, 1.5vw, 20px);
+  }
+  .icon { min-height: 70px; padding-bottom: 10px; }
+  .icon img { width: 50px; height: 50px; }
+  .icon i { font-size: 3rem !important; }
+}
+
+@media(max-width:700px) {
+  .icons-grid { 
+    grid-template-columns:repeat(3,1fr); 
+    row-gap: clamp(38px, 5.5vh, 75px);
+    column-gap: clamp(8px, 1.2vw, 18px);
+  }
+  .icon { min-height: 65px; padding-bottom: 8px; }
+  .icon img { width: 48px; height: 48px; }
+  .icon i { font-size: 2.9rem !important; }
 }
 
 @media(max-width:600px) {
-  .icons-grid { grid-template-columns:repeat(3,1fr); gap: 45px 10px; }
-  .icon { margin-bottom: 5px; }
-  .icon img { width: 45px; height: 45px; }
-  .icon i { font-size: 2.8rem !important; }
+  .icons-grid { 
+    grid-template-columns:repeat(3,1fr); 
+    row-gap: clamp(35px, 5vh, 70px);
+    column-gap: clamp(6px, 1vw, 15px);
+  }
+  .icon { min-height: 60px; padding-bottom: 6px; transform:scale(0.95); }
+  .icon:hover { transform:scale(1.05); }
+  .icon img { width: 44px; height: 44px; }
+  .icon i { font-size: 2.7rem !important; }
   .console-body { min-height:150px; }
   .nav-item { width:50px; height:50px; font-size:1.5rem; }
   .hero-name { font-size: 2rem; }
@@ -600,6 +634,15 @@ footer {
   .contact-form { padding: 25px; }
   footer { flex-direction: column; gap: 15px; padding: 15px; }
   .circle-menu { gap: 10px; }
-  .icon img { width: 45px; height: 45px; }
+}
+
+@media(max-width:400px) {
+  .icons-grid { 
+    grid-template-columns:repeat(2,1fr); 
+    row-gap: clamp(32px, 4.5vh, 65px);
+    column-gap: clamp(5px, 0.8vw, 12px);
+  }
+  .icon { min-height: 55px; padding-bottom: 5px; }
+  .icon img { width: 40px; height: 40px; }
   .icon i { font-size: 2.5rem !important; }
 }
