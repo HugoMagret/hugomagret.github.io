@@ -96,7 +96,7 @@ canvas#bg {
   margin-bottom:40px;
 }
 .exp-category h3 {
-  margin-bottom:15px; font-size:1.3rem;
+  margin-bottom:12px; font-size:1.35rem; font-weight:700; color:var(--fg); text-transform:uppercase; letter-spacing:1px;
 }
 .icons-grid {
   display: grid;
