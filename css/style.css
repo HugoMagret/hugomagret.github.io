@@ -39,6 +39,7 @@ canvas#bg {
   display: flex;
   align-items: center;
   justify-content: center;
+  outline: none;
 }
 .lang-btn img {
   width: 40px;
@@ -46,14 +47,17 @@ canvas#bg {
   object-fit: contain;
   border-radius: 50%;
   box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  pointer-events: none;
 }
 .lang-btn:hover {
   opacity: 1;
   transform: scale(1.15);
 }
+.lang-btn:focus {
+  outline: none;
+}
 .lang-btn.active {
   opacity: 1;
-  box-shadow: 0 0 15px rgba(0,255,255,0.5);
 }
 .lang-btn.active img {
   box-shadow: 0 0 15px rgba(0,255,255,0.6);
@@ -119,7 +123,7 @@ canvas#bg {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
   row-gap: clamp(50px, 8vh, 100px);
-  column-gap: clamp(15px, 2vw, 30px);
+  column-gap: clamp(8px, 1.2vw, 18px);
   justify-items: center;
   margin-top: 20px;
   padding-bottom: 20px;
@@ -606,7 +610,7 @@ footer {
   .icons-grid { 
     grid-template-columns:repeat(5,1fr); 
     row-gap: clamp(45px, 7vh, 90px);
-    column-gap: clamp(12px, 1.8vw, 25px);
+    column-gap: clamp(8px, 1.2vw, 18px);
   }
   .icon { min-height: 75px; padding-bottom: 12px; }
 }
@@ -615,7 +619,7 @@ footer {
   .icons-grid { 
     grid-template-columns:repeat(4,1fr); 
     row-gap: clamp(40px, 6vh, 80px);
-    column-gap: clamp(10px, 1.5vw, 20px);
+    column-gap: clamp(6px, 1vw, 15px);
   }
   .icon { min-height: 70px; padding-bottom: 10px; }
   .icon img { width: 50px; height: 50px; }
@@ -626,7 +630,7 @@ footer {
   .icons-grid { 
     grid-template-columns:repeat(3,1fr); 
     row-gap: clamp(38px, 5.5vh, 75px);
-    column-gap: clamp(8px, 1.2vw, 18px);
+    column-gap: clamp(5px, 0.8vw, 12px);
   }
   .icon { min-height: 65px; padding-bottom: 8px; }
   .icon img { width: 48px; height: 48px; }

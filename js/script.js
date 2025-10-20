@@ -88,21 +88,135 @@ document.addEventListener('DOMContentLoaded', () => {
 // 4. Switch FR/EN pour tagline, titre exp & console
 const btnFR = document.getElementById('btn-fr'),
       btnEN = document.getElementById('btn-en'),
-      tagline = document.getElementById('hero-tagline'),
+      tagline = document.getElementById('hero-tagline') || document.querySelector('.hero-tagline'),
       expTitle = document.querySelector('.expertise h2');
 
+// Traductions pour la page About
+const translations = {
+  fr: {
+    tagline: 'Coder le futur, une ligne à la fois.',
+    aboutTitle: 'À Propos de Moi',
+    aboutP1: "Je suis un développeur informatique passionné avec une forte concentration sur la création d'applications web évolutives et efficaces. Mon expertise réside dans les langages C/C++, Python, PHP, et JavaScript, ainsi que dans l'architecture microservices. J'aime relever des défis complexes avec des solutions élégantes.",
+    aboutP2: "Que ce soit pour créer des interfaces utilisateur intuitives, automatiser des flux de travail avec des APIs puissantes, ou architecturer des systèmes pour une évolutivité transparente entre les environnements, je m'épanouis dans la création de solutions innovantes et pratiques.",
+    aboutP3: "Au-delà du code, je gère mon propre serveur domestique, en améliorant constamment les performances et la sécurité. Quand je ne code pas, j'aime me détendre avec quelques jeux classiques. Si vous cherchez un passionné de technologie qui aime construire, faire évoluer et sécuriser des applications, connectons-nous !",
+    gamesTitle: 'Détente & Mini-Jeux',
+    contactTitle: 'Entrons en Contact',
+    contactSubtitle: 'Discutons de votre projet',
+    contactName: 'Nom',
+    contactNamePlaceholder: 'Votre nom complet',
+    contactEmail: 'Email',
+    contactEmailPlaceholder: 'votre.email@exemple.com',
+    contactMessage: 'Message',
+    contactMessagePlaceholder: 'Décrivez votre projet ou votre question...',
+    contactSubmit: 'Envoyer le Message',
+    cvTitle: 'Mon CV',
+    cvView: 'Visualiser',
+    cvDownload: 'Télécharger',
+    certTitle: 'Certifications',
+    certPix: 'Certification Pix',
+    certPixDesc: "Certification officielle des compétences numériques reconnue par l'État français. Niveau avancé en développement, sécurité et gestion de données.",
+    certDate: "Date d'obtention :",
+    projectsTitle: 'Mes Projets'
+  },
+  en: {
+    tagline: 'Coding the future, one line at a time.',
+    aboutTitle: 'About Me',
+    aboutP1: "I am a passionate computer developer with a strong focus on creating scalable and efficient web applications. My expertise lies in C/C++, Python, PHP, and JavaScript languages, as well as microservices architecture. I love tackling complex challenges with elegant solutions.",
+    aboutP2: "Whether it's building intuitive user interfaces, automating workflows with powerful APIs, or architecting systems for seamless scalability across environments, I thrive on creating innovative and practical solutions.",
+    aboutP3: "Beyond coding, I manage my own home server, constantly improving performance and security. When I'm not coding, I enjoy relaxing with some classic games. If you're looking for a tech enthusiast who loves to build, scale and secure applications, let's connect!",
+    gamesTitle: 'Relax & Mini-Games',
+    contactTitle: "Let's Get in Touch",
+    contactSubtitle: "Let's discuss your project",
+    contactName: 'Name',
+    contactNamePlaceholder: 'Your full name',
+    contactEmail: 'Email',
+    contactEmailPlaceholder: 'your.email@example.com',
+    contactMessage: 'Message',
+    contactMessagePlaceholder: 'Describe your project or question...',
+    contactSubmit: 'Send Message',
+    cvTitle: 'My Resume',
+    cvView: 'View',
+    cvDownload: 'Download',
+    certTitle: 'Certifications',
+    certPix: 'Pix Certification',
+    certPixDesc: "Official digital skills certification recognized by the French government. Advanced level in development, security and data management.",
+    certDate: "Date obtained:",
+    projectsTitle: 'My Projects'
+  }
+};
+
 function updateLanguage(lang) {
+  // Sauvegarder la langue dans localStorage
+  localStorage.setItem('preferredLanguage', lang);
+  
   // Mettre à jour tous les titres avec data-fr et data-en
   document.querySelectorAll('[data-fr][data-en]').forEach(el => {
     el.textContent = lang === 'fr' ? el.getAttribute('data-fr') : el.getAttribute('data-en');
   });
+  
+  // Mettre à jour le tagline
+  if (tagline) tagline.textContent = translations[lang].tagline;
+  
+  // Mettre à jour la page About
+  const aboutTitle = document.querySelector('.about-intro h2');
+  const aboutParagraphs = document.querySelectorAll('.about-intro p');
+  const gamesTitle = document.querySelector('.games-section h3');
+  
+  if (aboutTitle) aboutTitle.textContent = translations[lang].aboutTitle;
+  if (aboutParagraphs[0]) aboutParagraphs[0].textContent = translations[lang].aboutP1;
+  if (aboutParagraphs[1]) aboutParagraphs[1].textContent = translations[lang].aboutP2;
+  if (aboutParagraphs[2]) aboutParagraphs[2].textContent = translations[lang].aboutP3;
+  if (gamesTitle) gamesTitle.textContent = translations[lang].gamesTitle;
+  
+  // Mettre à jour la page Contact
+  const contactTitle = document.querySelector('.contact-section h2');
+  const contactSubtitle = document.querySelector('.contact-section .subtitle');
+  const nameLabel = document.querySelector('label[for="name"]');
+  const nameInput = document.querySelector('#name');
+  const emailLabel = document.querySelector('label[for="email"]');
+  const emailInput = document.querySelector('#email');
+  const messageLabel = document.querySelector('label[for="message"]');
+  const messageInput = document.querySelector('#message');
+  const submitBtn = document.querySelector('.submit-btn');
+  
+  if (contactTitle) contactTitle.textContent = translations[lang].contactTitle;
+  if (contactSubtitle) contactSubtitle.textContent = translations[lang].contactSubtitle;
+  if (nameLabel) nameLabel.textContent = translations[lang].contactName;
+  if (nameInput) nameInput.placeholder = translations[lang].contactNamePlaceholder;
+  if (emailLabel) emailLabel.textContent = translations[lang].contactEmail;
+  if (emailInput) emailInput.placeholder = translations[lang].contactEmailPlaceholder;
+  if (messageLabel) messageLabel.textContent = translations[lang].contactMessage;
+  if (messageInput) messageInput.placeholder = translations[lang].contactMessagePlaceholder;
+  if (submitBtn) {
+    submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> ' + translations[lang].contactSubmit;
+  }
+  
+  // Mettre à jour la page CV
+  const cvTitle = document.querySelector('.cv-section h2');
+  const cvViewBtn = document.querySelector('.cv-controls a:first-child');
+  const cvDownloadBtn = document.querySelector('.cv-controls a:last-child');
+  const certTitle = document.querySelector('.certifications h3');
+  const certPixTitle = document.querySelector('.cert-card h4');
+  const certPixDesc = document.querySelector('.cert-card p:first-of-type');
+  const certDate = document.querySelector('.cert-card p:last-of-type strong');
+  
+  if (cvTitle) cvTitle.textContent = translations[lang].cvTitle;
+  if (cvViewBtn) cvViewBtn.innerHTML = '<i class="fas fa-eye"></i> ' + translations[lang].cvView;
+  if (cvDownloadBtn) cvDownloadBtn.innerHTML = '<i class="fas fa-download"></i> ' + translations[lang].cvDownload;
+  if (certTitle) certTitle.textContent = translations[lang].certTitle;
+  if (certPixTitle) certPixTitle.textContent = translations[lang].certPix;
+  if (certPixDesc) certPixDesc.textContent = translations[lang].certPixDesc;
+  if (certDate) certDate.textContent = translations[lang].certDate + ' ';
+  
+  // Mettre à jour la page Projets
+  const projectsTitle = document.querySelector('.projects-section h2');
+  if (projectsTitle) projectsTitle.textContent = translations[lang].projectsTitle;
 }
 
 if (btnFR && btnEN) {
   btnFR.addEventListener('click', ()=>{
     btnEN.classList.remove('active');
     btnFR.classList.add('active');
-    tagline.textContent = 'Coder le futur, une ligne à la fois.';
     if (expTitle) expTitle.textContent = 'Compétences Techniques';
     if (cb) typeLines(linesFR);
     updateLanguage('fr');
@@ -110,7 +224,6 @@ if (btnFR && btnEN) {
   btnEN.addEventListener('click', ()=>{
     btnFR.classList.remove('active');
     btnEN.classList.add('active');
-    tagline.textContent = 'Coding the future, one line at a time.';
     if (expTitle) expTitle.textContent = 'Technical Expertise';
     if (cb) typeLines(linesEN);
     updateLanguage('en');
@@ -119,13 +232,29 @@ if (btnFR && btnEN) {
 
 // Init console + default langue
 window.addEventListener('load', ()=>{
-  if (cb) typeLines(linesFR);
+  // Charger la langue sauvegardée ou utiliser FR par défaut
+  const savedLang = localStorage.getItem('preferredLanguage') || 'fr';
+  
+  // Appliquer la langue sauvegardée
+  if (savedLang === 'en' && btnEN) {
+    btnFR.classList.remove('active');
+    btnEN.classList.add('active');
+    if (expTitle) expTitle.textContent = 'Technical Expertise';
+    if (cb) typeLines(linesEN);
+    updateLanguage('en');
+  } else {
+    if (cb) typeLines(linesFR);
+    updateLanguage('fr');
+  }
   
   // Vérifier le message de succès pour le formulaire de contact
   const urlParams = new URLSearchParams(window.location.search);
   const formMessage = document.getElementById('formMessage');
   if (urlParams.get('success') === 'true' && formMessage) {
-    formMessage.textContent = '✓ Message envoyé avec succès ! Je vous répondrai bientôt.';
+    const successMsg = savedLang === 'fr' 
+      ? '✓ Message envoyé avec succès ! Je vous répondrai bientôt.'
+      : '✓ Message sent successfully! I will reply to you soon.';
+    formMessage.textContent = successMsg;
     formMessage.className = 'form-message success';
     formMessage.style.display = 'block';
     
