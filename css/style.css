@@ -104,7 +104,7 @@ canvas#bg {
   gap: 40px 15px;
   justify-items: center;
   margin-top: 10px;
-  padding-bottom: 15px;
+  padding-bottom: 5px;
   max-width: 100%;
 }
 .icon {
