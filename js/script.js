@@ -412,6 +412,8 @@ window.addEventListener('load', ()=>{
   }
 
   // Reveal on scroll (IntersectionObserver) with staggered children animation
+  // expose initRevealObserver
+  let initRevealObserver = null;
   try {
     function staggerReveal(el) {
       // Add show to parent (so any parent-based CSS triggers)
@@ -425,12 +427,20 @@ window.addEventListener('load', ()=>{
       });
     }
 
-    const io = new IntersectionObserver((entries)=>{
-      entries.forEach(e=>{
-        if (e.isIntersecting) { staggerReveal(e.target); io.unobserve(e.target); }
-      });
-    }, { threshold: 0.12 });
-    document.querySelectorAll('.reveal-on-scroll').forEach(el => io.observe(el));
+  // trigger later when more of the element is in view
+  const revealOptions = { threshold: 0.6, rootMargin: '0px 0px -12% 0px' };
+      let io = null;
+      // make initRevealObserver available in outer scope
+      initRevealObserver = function() {
+        if (io) try { io.disconnect(); } catch(e){}
+        io = new IntersectionObserver((entries)=>{
+          entries.forEach(e=>{
+            if (e.isIntersecting) { staggerReveal(e.target); io.unobserve(e.target); }
+          });
+        }, revealOptions);
+        document.querySelectorAll('.reveal-on-scroll').forEach(el => io.observe(el));
+      };
+      initRevealObserver();
   } catch(e) { /* ignore if not supported */ }
   
   // Vérifier le message de succès pour le formulaire de contact
@@ -450,3 +460,141 @@ window.addEventListener('load', ()=>{
     }, 2000);
   }
 });
+
+// ---------------------------
+// Tagline per-character animation
+// ---------------------------
+function animateTagline() {
+  const el = document.getElementById('hero-tagline') || document.querySelector('.hero-tagline');
+  if (!el) return;
+  const text = (el.getAttribute('data-text') || el.textContent || '').trim();
+  // Clear existing and build spans
+  el.innerHTML = '';
+  const fragment = document.createDocumentFragment();
+  Array.from(text).forEach((ch, i) => {
+    const span = document.createElement('span');
+    span.className = 'tag-char';
+    span.textContent = ch === ' ' ? '\u00A0' : ch;
+    span.style.opacity = '0';
+    span.style.display = 'inline-block';
+    span.style.transform = 'translateY(6px)';
+    span.style.transition = 'opacity 420ms ease, transform 420ms cubic-bezier(.2,.8,.2,1)';
+    span.style.transitionDelay = (i * 35) + 'ms';
+    fragment.appendChild(span);
+  });
+  el.appendChild(fragment);
+  // trigger reflow then animate
+  requestAnimationFrame(()=>{
+    Array.from(el.querySelectorAll('.tag-char')).forEach(s => {
+      s.style.opacity = '1';
+      s.style.transform = 'translateY(0)';
+    });
+  });
+}
+
+// Ensure tagline runs after language change
+const _origUpdateLanguage = updateLanguage;
+updateLanguage = function(lang){
+  _origUpdateLanguage(lang);
+  // store raw text so animateTagline can read it
+  const el = document.getElementById('hero-tagline') || document.querySelector('.hero-tagline');
+  if (el) el.setAttribute('data-text', translations[lang].tagline);
+  // small delay to ensure DOM updated
+  setTimeout(()=> animateTagline(), 40);
+};
+
+// ---------------------------
+// PJAX: fetch main content and replace without reloading canvas
+// ---------------------------
+function initPJAX() {
+  // delegate click on internal links
+  document.addEventListener('click', async function(e){
+    const a = e.target.closest('a');
+    if (!a) return;
+    const href = a.getAttribute('href');
+    if (!href || href.startsWith('#') || a.target === '_blank' || a.hasAttribute('data-no-pjax')) return;
+    // resolve full url
+    const url = new URL(href, location.href);
+    if (url.origin !== location.origin) return; // external
+
+    // only pjax for html pages (internal)
+    if (!url.pathname.endsWith('.html') && !url.pathname.endsWith('/') && !url.pathname.endsWith('.htm')) return;
+
+    e.preventDefault();
+    try {
+      const res = await fetch(url.href, { cache: 'no-cache' });
+      if (!res.ok) { window.location.href = url.href; return; }
+      const text = await res.text();
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(text, 'text/html');
+      // grab main content
+      const incomingMain = doc.querySelector('main') || doc.querySelector('#pjax-content');
+      const destMain = document.querySelector('main') || document.querySelector('#pjax-content');
+      if (incomingMain && destMain) {
+        // optional nice fade transition
+        destMain.style.transition = 'opacity 260ms ease';
+        destMain.style.opacity = '0';
+        await new Promise(r => setTimeout(r, 180));
+        destMain.innerHTML = incomingMain.innerHTML;
+        // update title
+        document.title = doc.title || document.title;
+        // run inline scripts inside incomingMain
+        const scripts = Array.from(incomingMain.querySelectorAll('script'));
+        scripts.forEach(s => {
+          if (s.src) {
+            const sc = document.createElement('script'); sc.src = s.src; document.body.appendChild(sc);
+          } else {
+            const sc = document.createElement('script'); sc.textContent = s.textContent; document.body.appendChild(sc);
+          }
+        });
+        // small delay then fade-in
+        await new Promise(r => setTimeout(r, 40));
+        destMain.style.opacity = '1';
+        // re-init behaviors for newly inserted content
+        initRevealObserver();
+        // re-run language to update any elements and tagline
+        const saved = localStorage.getItem('preferredLanguage') || 'fr';
+        updateLanguage(saved);
+      } else {
+        // fallback to full nav
+        window.location.href = url.href;
+      }
+      history.pushState({ pjax: true }, '', url.href);
+    } catch (err){ console.error('PJAX failed', err); window.location.href = href; }
+  });
+
+  // handle back/forward
+  window.addEventListener('popstate', async function(){
+    const url = location.href;
+    try {
+      const res = await fetch(url, { cache: 'no-cache' });
+      if (!res.ok) return;
+      const text = await res.text();
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(text, 'text/html');
+      const incomingMain = doc.querySelector('main') || doc.querySelector('#pjax-content');
+      const destMain = document.querySelector('main') || document.querySelector('#pjax-content');
+      if (incomingMain && destMain) {
+        destMain.innerHTML = incomingMain.innerHTML;
+        document.title = doc.title || document.title;
+        const scripts = Array.from(incomingMain.querySelectorAll('script'));
+        scripts.forEach(s => {
+          if (s.src) {
+            const sc = document.createElement('script'); sc.src = s.src; document.body.appendChild(sc);
+          } else {
+            const sc = document.createElement('script'); sc.textContent = s.textContent; document.body.appendChild(sc);
+          }
+        });
+        initRevealObserver();
+        const saved = localStorage.getItem('preferredLanguage') || 'fr';
+        updateLanguage(saved);
+      }
+    } catch(e) { console.error('popstate pjax error', e); }
+  });
+}
+
+// start PJAX
+try{ initPJAX(); }catch(e){/* ignore */}
+
+// run initial tagline animation
+try{ animateTagline(); }catch(e){}

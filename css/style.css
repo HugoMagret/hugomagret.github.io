@@ -363,8 +363,8 @@ footer {
 
   /* Tagline: letter-by-letter gentle fade-in (no cursor) */
   .hero-tagline { display:inline-block; }
-  .hero-tagline .char { display:inline-block; opacity:0; transform: translateY(6px); }
-  .hero-tagline .char.animate { animation: charIn 360ms ease forwards; }
+  .hero-tagline .tag-char, .hero-tagline .char { display:inline-block; opacity:0; transform: translateY(6px); }
+  .hero-tagline .tag-char { will-change: opacity, transform; }
   @keyframes charIn { to { opacity:1; transform: translateY(0); } }
 
   /* Reveal on scroll helper */
