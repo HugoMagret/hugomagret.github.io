@@ -475,21 +475,17 @@ function animateTagline() {
     const span = document.createElement('span');
     span.className = 'tag-char';
     span.textContent = ch === ' ' ? '\u00A0' : ch;
-    span.style.opacity = '0';
+    // use CSS animation for a stronger effect: staggered tagPop
+    span.style.animation = 'none';
     span.style.display = 'inline-block';
-    span.style.transform = 'translateY(6px)';
-    span.style.transition = 'opacity 420ms ease, transform 420ms cubic-bezier(.2,.8,.2,1)';
-    span.style.transitionDelay = (i * 35) + 'ms';
+    span.style.animation = `tagPop 520ms cubic-bezier(.2,.8,.2,1) ${i * 48}ms both`;
     fragment.appendChild(span);
   });
   el.appendChild(fragment);
-  // trigger reflow then animate
-  requestAnimationFrame(()=>{
-    Array.from(el.querySelectorAll('.tag-char')).forEach(s => {
-      s.style.opacity = '1';
-      s.style.transform = 'translateY(0)';
-    });
-  });
+  // add sweep class for highlight
+  el.classList.remove('sweep');
+  // reflow then add sweep to trigger pseudo-element animation
+  requestAnimationFrame(()=> el.classList.add('sweep'));
 }
 
 // Ensure tagline runs after language change
@@ -538,13 +534,23 @@ function initPJAX() {
         destMain.innerHTML = incomingMain.innerHTML;
         // update title
         document.title = doc.title || document.title;
-        // run inline scripts inside incomingMain
+        // run scripts inside incomingMain
         const scripts = Array.from(incomingMain.querySelectorAll('script'));
         scripts.forEach(s => {
           if (s.src) {
-            const sc = document.createElement('script'); sc.src = s.src; document.body.appendChild(sc);
+            // resolve absolute src and skip if already present on the page
+            try {
+              const abs = new URL(s.getAttribute('src'), url.href).href;
+              if (document.querySelector('script[src="' + abs + '"]')) return; // already loaded
+              const sc = document.createElement('script'); sc.src = abs; sc.async = true; document.body.appendChild(sc);
+            } catch (e) { /* if URL fails, append as-is */
+              const sc = document.createElement('script'); sc.src = s.getAttribute('src'); sc.async = true; document.body.appendChild(sc);
+            }
           } else {
-            const sc = document.createElement('script'); sc.textContent = s.textContent; document.body.appendChild(sc);
+            // execute inline scripts asynchronously to avoid blocking rendering
+            setTimeout(()=>{
+              const sc = document.createElement('script'); sc.textContent = s.textContent; document.body.appendChild(sc);
+            }, 0);
           }
         });
         // small delay then fade-in
@@ -580,9 +586,17 @@ function initPJAX() {
         const scripts = Array.from(incomingMain.querySelectorAll('script'));
         scripts.forEach(s => {
           if (s.src) {
-            const sc = document.createElement('script'); sc.src = s.src; document.body.appendChild(sc);
+            try {
+              const abs = new URL(s.getAttribute('src'), url).href;
+              if (document.querySelector('script[src="' + abs + '"]')) return;
+              const sc = document.createElement('script'); sc.src = abs; sc.async = true; document.body.appendChild(sc);
+            } catch(e) {
+              const sc = document.createElement('script'); sc.src = s.getAttribute('src'); sc.async = true; document.body.appendChild(sc);
+            }
           } else {
-            const sc = document.createElement('script'); sc.textContent = s.textContent; document.body.appendChild(sc);
+            setTimeout(()=>{
+              const sc = document.createElement('script'); sc.textContent = s.textContent; document.body.appendChild(sc);
+            },0);
           }
         });
         initRevealObserver();
