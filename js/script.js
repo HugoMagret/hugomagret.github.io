@@ -477,9 +477,10 @@ function animateTagline() {
     span.className = 'tag-char';
     span.textContent = ch === ' ' ? '\u00A0' : ch;
     // use CSS animation for a stronger effect: staggered tagPop
+    // définir l'animation : augmentation de la durée et du décalage pour un effet plus lent
     span.style.animation = 'none';
     span.style.display = 'inline-block';
-    span.style.animation = `tagPop 520ms cubic-bezier(.2,.8,.2,1) ${i * 48}ms both`;
+    span.style.animation = `tagPop 760ms cubic-bezier(.2,.8,.2,1) ${i * 90}ms both`;
     fragment.appendChild(span);
   });
   el.appendChild(fragment);
@@ -538,23 +539,35 @@ function initPJAX() {
 
     e.preventDefault();
     try {
-      // Take a quick snapshot of the canvas to mask any visual freeze during navigation
+      // Capture un snapshot du canvas et afficher un overlay image pour masquer toute saccade
       try {
         const cvs = document.getElementById('bg');
         if (cvs && typeof cvs.toDataURL === 'function') {
           try {
             const snapshot = cvs.toDataURL('image/png');
-            // apply as temporary page background while we swap content
-            const prevBg = document.body.style.backgroundImage || '';
-            const prevBgSize = document.body.style.backgroundSize || '';
-            const prevBgRepeat = document.body.style.backgroundRepeat || '';
-            document.body.setAttribute('data-prev-bg', prevBg);
-            document.body.setAttribute('data-prev-bg-size', prevBgSize);
-            document.body.setAttribute('data-prev-bg-repeat', prevBgRepeat);
-            document.body.style.backgroundImage = `url('${snapshot}')`;
-            document.body.style.backgroundSize = 'cover';
-            document.body.style.backgroundRepeat = 'no-repeat';
-          } catch(e) { /* ignore snapshot errors */ }
+            const OVERLAY_ID = 'pjax-snapshot-overlay';
+            // réutiliser l'overlay s'il existe déjà
+            let overlay = document.getElementById(OVERLAY_ID);
+            if (!overlay) {
+              overlay = document.createElement('img');
+              overlay.id = OVERLAY_ID;
+              Object.assign(overlay.style, {
+                position: 'fixed',
+                left: '0', top: '0',
+                width: '100%', height: '100%',
+                objectFit: 'cover',
+                zIndex: 9999,
+                pointerEvents: 'none',
+                transition: 'opacity 360ms ease',
+                opacity: '1',
+                background: '#000'
+              });
+              document.body.appendChild(overlay);
+            }
+            overlay.src = snapshot;
+            // s'assurer que l'overlay est visible immédiatement
+            overlay.style.opacity = '1';
+          } catch(e) { /* ignorer erreurs de snapshot */ }
         }
       } catch(e) { /* ignore */ }
 
@@ -572,44 +585,50 @@ function initPJAX() {
         destMain.style.opacity = '0';
         await new Promise(r => setTimeout(r, 180));
         destMain.innerHTML = incomingMain.innerHTML;
-        // update title
+        // Mettre à jour le titre
         document.title = doc.title || document.title;
-        // run scripts inside incomingMain
+
+        // Attendre un premier rendu, puis exécuter les scripts pour éviter de bloquer le paint
         const scripts = Array.from(incomingMain.querySelectorAll('script'));
+
+        // attendre deux frames pour garantir que le navigateur a peint le nouveau DOM
+        await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+
+        // Exécuter les scripts externes (si non déjà chargés) et les inline légèrement différés
         scripts.forEach(s => {
           if (s.src) {
-            // resolve absolute src and skip if already present on the page
             try {
               const abs = new URL(s.getAttribute('src'), url.href).href;
-              if (document.querySelector('script[src="' + abs + '"]')) return; // already loaded
+              if (document.querySelector('script[src="' + abs + '"]')) return; // déjà présent
               const sc = document.createElement('script'); sc.src = abs; sc.async = true; document.body.appendChild(sc);
-            } catch (e) { /* if URL fails, append as-is */
+            } catch (e) {
               const sc = document.createElement('script'); sc.src = s.getAttribute('src'); sc.async = true; document.body.appendChild(sc);
             }
           } else {
-            // execute inline scripts asynchronously to avoid blocking rendering
+            // exécuter les scripts inline après un court délai pour laisser le navigateur peindre
             setTimeout(()=>{
-              const sc = document.createElement('script'); sc.textContent = s.textContent; document.body.appendChild(sc);
-            }, 0);
+              try { const sc = document.createElement('script'); sc.textContent = s.textContent; document.body.appendChild(sc); }catch(e){}
+            }, 30);
           }
         });
-        // small delay then fade-in
+
+        // petit délai puis fade-in du contenu
         await new Promise(r => setTimeout(r, 40));
         destMain.style.opacity = '1';
-        // clear temporary snapshot background after content shows
-        setTimeout(()=>{
-          try {
-            const prev = document.body.getAttribute('data-prev-bg') || '';
-            const prevSize = document.body.getAttribute('data-prev-bg-size') || '';
-            const prevRepeat = document.body.getAttribute('data-prev-bg-repeat') || '';
-            document.body.style.backgroundImage = prev;
-            document.body.style.backgroundSize = prevSize;
-            document.body.style.backgroundRepeat = prevRepeat;
-            document.body.removeAttribute('data-prev-bg');
-            document.body.removeAttribute('data-prev-bg-size');
-            document.body.removeAttribute('data-prev-bg-repeat');
-          } catch(e){}
-        }, 220);
+
+        // masquer l'overlay via cross-fade (si présent)
+        try {
+          const overlay = document.getElementById('pjax-snapshot-overlay');
+          if (overlay) {
+            // laisser un court délai pour que l'utilisateur voie le contenu rendu
+            setTimeout(()=>{
+              try {
+                overlay.style.opacity = '0';
+                overlay.addEventListener('transitionend', function onEnd(){ overlay.removeEventListener('transitionend', onEnd); try{ overlay.remove(); }catch(e){} });
+              } catch(e) { try{ overlay.remove(); } catch(_){} }
+            }, 140);
+          }
+        } catch(e) { /* ignore */ }
         // re-init behaviors for newly inserted content
         initRevealObserver();
         // re-run language to update any elements and tagline

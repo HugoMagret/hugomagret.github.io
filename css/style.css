@@ -381,7 +381,8 @@ footer {
     background: linear-gradient(90deg, rgba(255,255,255,0.0), rgba(255,255,255,0.25), rgba(255,255,255,0.0));
     transform: skewX(-12deg);
     filter: blur(8px);
-    animation: sweep 1100ms ease 1 forwards;
+    /* rallonger le sweep pour un mouvement plus doux */
+    animation: sweep 1600ms ease 1 forwards;
   }
   @keyframes sweep { to { left: 120%; } }
   @keyframes charIn { to { opacity:1; transform: translateY(0); } }
