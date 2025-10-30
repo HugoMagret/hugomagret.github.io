@@ -469,6 +469,7 @@ function animateTagline() {
   if (!el) return;
   const text = (el.getAttribute('data-text') || el.textContent || '').trim();
   // Clear existing and build spans
+  // remove any existing chars to avoid duplicate or partially-animated nodes
   el.innerHTML = '';
   const fragment = document.createDocumentFragment();
   Array.from(text).forEach((ch, i) => {
@@ -484,9 +485,28 @@ function animateTagline() {
   el.appendChild(fragment);
   // add sweep class for highlight
   el.classList.remove('sweep');
+  // small cleanup: force reflow so animation reliably restarts
+  void el.offsetWidth;
   // reflow then add sweep to trigger pseudo-element animation
   requestAnimationFrame(()=> el.classList.add('sweep'));
 }
+
+// Fallback: observe for tagline insertion and animate when found
+try {
+  const mo = new MutationObserver((list, obs) => {
+    const el = document.getElementById('hero-tagline') || document.querySelector('.hero-tagline');
+    if (el) {
+      // ensure data-text is set
+      const savedLang = localStorage.getItem('preferredLanguage') || 'fr';
+      if (!el.getAttribute('data-text')) el.setAttribute('data-text', translations && translations[savedLang] ? translations[savedLang].tagline : el.textContent);
+      animateTagline();
+      // small delay: run again to be extra safe
+      setTimeout(()=> animateTagline(), 120);
+      obs.disconnect();
+    }
+  });
+  mo.observe(document.documentElement || document.body, { childList: true, subtree: true });
+} catch(e) { /* ignore */ }
 
 // Ensure tagline runs after language change
 const _origUpdateLanguage = updateLanguage;
@@ -518,6 +538,26 @@ function initPJAX() {
 
     e.preventDefault();
     try {
+      // Take a quick snapshot of the canvas to mask any visual freeze during navigation
+      try {
+        const cvs = document.getElementById('bg');
+        if (cvs && typeof cvs.toDataURL === 'function') {
+          try {
+            const snapshot = cvs.toDataURL('image/png');
+            // apply as temporary page background while we swap content
+            const prevBg = document.body.style.backgroundImage || '';
+            const prevBgSize = document.body.style.backgroundSize || '';
+            const prevBgRepeat = document.body.style.backgroundRepeat || '';
+            document.body.setAttribute('data-prev-bg', prevBg);
+            document.body.setAttribute('data-prev-bg-size', prevBgSize);
+            document.body.setAttribute('data-prev-bg-repeat', prevBgRepeat);
+            document.body.style.backgroundImage = `url('${snapshot}')`;
+            document.body.style.backgroundSize = 'cover';
+            document.body.style.backgroundRepeat = 'no-repeat';
+          } catch(e) { /* ignore snapshot errors */ }
+        }
+      } catch(e) { /* ignore */ }
+
       const res = await fetch(url.href, { cache: 'no-cache' });
       if (!res.ok) { window.location.href = url.href; return; }
       const text = await res.text();
@@ -556,6 +596,20 @@ function initPJAX() {
         // small delay then fade-in
         await new Promise(r => setTimeout(r, 40));
         destMain.style.opacity = '1';
+        // clear temporary snapshot background after content shows
+        setTimeout(()=>{
+          try {
+            const prev = document.body.getAttribute('data-prev-bg') || '';
+            const prevSize = document.body.getAttribute('data-prev-bg-size') || '';
+            const prevRepeat = document.body.getAttribute('data-prev-bg-repeat') || '';
+            document.body.style.backgroundImage = prev;
+            document.body.style.backgroundSize = prevSize;
+            document.body.style.backgroundRepeat = prevRepeat;
+            document.body.removeAttribute('data-prev-bg');
+            document.body.removeAttribute('data-prev-bg-size');
+            document.body.removeAttribute('data-prev-bg-repeat');
+          } catch(e){}
+        }, 220);
         // re-init behaviors for newly inserted content
         initRevealObserver();
         // re-run language to update any elements and tagline
