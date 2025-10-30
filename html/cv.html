@@ -28,7 +28,7 @@
   <!-- Header principal -->
   <header class="hero">
     <h1 class="hero-name">Hugo Magret</h1>
-    <p class="hero-tagline typewriter">Coder le futur, une ligne à la fois.</p>
+    <p class="hero-tagline">Coder le futur, une ligne à la fois.</p>
   </header>
 
   <!-- CV Section -->
@@ -46,9 +46,35 @@
       </div>
       <iframe id="cvEmbed" class="cv-embed" src="../images/cv.pdf" type="application/pdf">
         <p>Votre navigateur ne peut pas afficher le PDF. 
-        <a href="../images/cv.pdf" target="_blank">Cliquez ici pour le télécharger</a>.</p>
+        <a id="cvFallbackLink" href="../images/cv.pdf" target="_blank">Cliquez ici pour le télécharger</a>.</p>
       </iframe>
     </div>
+
+    <script>
+      // Ensure CV shown matches preferred language stored in localStorage
+      (function(){
+        const view = document.getElementById('cvViewLink');
+        const dl = document.getElementById('cvDownloadLink');
+        const embed = document.getElementById('cvEmbed');
+        const fallback = document.getElementById('cvFallbackLink');
+
+        function applyLang(lang){
+          const href = (lang === 'en') ? '../images/cv_anglais.pdf' : '../images/cv.pdf';
+          if(view) view.setAttribute('href', href);
+          if(dl) { dl.setAttribute('href', href); dl.setAttribute('download', lang === 'en' ? 'CV_Hugo_Magret_EN.pdf' : 'CV_Hugo_Magret_FR.pdf'); }
+          if(embed) embed.setAttribute('src', href);
+          if(fallback) fallback.setAttribute('href', href);
+        }
+
+        // initial apply
+        try{ const lang = localStorage.getItem('preferredLanguage') || 'fr'; applyLang(lang); }catch(e){}
+
+        // listen for storage changes (other tabs) and apply
+        window.addEventListener('storage', (e)=>{
+          if(e.key === 'preferredLanguage') applyLang(e.newValue || 'fr');
+        });
+      })();
+    </script>
 
     <!-- Certifications -->
     <section class="certifications">
