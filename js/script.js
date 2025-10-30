@@ -3,6 +3,10 @@ const canvas = document.getElementById('bg'),
       ctx = canvas.getContext('2d');
 let w,h,parts=[],n=80;
 
+// Persistence key for particle state
+const PARTICLE_KEY = 'portfolio_particles_v1';
+let _lastParticleSave = 0;
+
 // Palette de 10 couleurs douces et harmonieuses
 const colors = [
   '#00FFFF', // Cyan bleu (couleur de départ)
@@ -22,17 +26,55 @@ function getRandomColor() {
 }
 
 function resize() {
-  w=canvas.width=innerWidth; h=canvas.height=innerHeight; parts=[];
-  for(let i=0;i<n;i++){
-    parts.push({ 
-      x:Math.random()*w, 
-      y:Math.random()*h,
-      vx:(Math.random()-0.5)*0.5, 
-      vy:(Math.random()-0.5)*0.5,
-      radius: 2,
-      color: '#00FFFF' // Toutes démarrent en bleu cyan
+  w = canvas.width = innerWidth;
+  h = canvas.height = innerHeight;
+
+  // Try to restore saved particles; otherwise create new ones
+  const saved = loadParticles();
+  parts = [];
+  if (saved && Array.isArray(saved) && saved.length === n) {
+    saved.forEach(p => {
+      parts.push({
+        x: Math.max((p.radius||2), Math.min(w - (p.radius||2), p.x)),
+        y: Math.max((p.radius||2), Math.min(h - (p.radius||2), p.y)),
+        vx: p.vx || (Math.random()-0.5)*0.5,
+        vy: p.vy || (Math.random()-0.5)*0.5,
+        radius: p.radius || 2,
+        color: p.color || '#00FFFF'
+      });
     });
+  } else {
+    for (let i = 0; i < n; i++) {
+      parts.push({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: (Math.random() - 0.5) * 0.5,
+        radius: 2,
+        color: '#00FFFF' // Toutes démarrent en bleu cyan
+      });
+    }
   }
+}
+
+function loadParticles() {
+  try {
+    const raw = localStorage.getItem(PARTICLE_KEY);
+    if (!raw) return null;
+    const arr = JSON.parse(raw);
+    return Array.isArray(arr) ? arr : null;
+  } catch (e) { return null; }
+}
+
+function saveParticles() {
+  try {
+    const now = Date.now();
+    // throttle writes to once every ~800ms
+    if (now - _lastParticleSave < 800) return;
+    _lastParticleSave = now;
+    const data = parts.map(p => ({ x: p.x, y: p.y, vx: p.vx, vy: p.vy, radius: p.radius, color: p.color }));
+    localStorage.setItem(PARTICLE_KEY, JSON.stringify(data));
+  } catch (e) { /* ignore storage errors */ }
 }
 
 // Fonction pour détecter et gérer les collisions entre particules
@@ -117,8 +159,14 @@ resize();
     ctx.fill();
   });
   
-  requestAnimationFrame(anim);
+    // Persist particle state periodically
+    saveParticles();
+
+    requestAnimationFrame(anim);
 })();
+// Save on page hide/unload to reduce lost state between navigations
+window.addEventListener('beforeunload', saveParticles);
+document.addEventListener('visibilitychange', () => { if (document.hidden) saveParticles(); });
 
 // 2. Console typing with multiple colors & lines
 const cb = document.getElementById('console-body'),
@@ -195,7 +243,7 @@ const translations = {
     aboutP2: "Que ce soit pour créer des interfaces utilisateur intuitives, automatiser des flux de travail avec des APIs puissantes, ou architecturer des systèmes pour une évolutivité transparente entre les environnements, je m'épanouis dans la création de solutions innovantes et pratiques.",
     aboutP3: "Au-delà du code, je gère mon propre serveur domestique, en améliorant constamment les performances et la sécurité. Quand je ne code pas, j'aime me détendre avec quelques jeux classiques. Si vous cherchez un passionné de technologie qui aime construire, faire évoluer et sécuriser des applications, connectons-nous !",
     gamesTitle: 'Détente & Mini-Jeux',
-      thankYou: 'Merci de votre visite',
+    thankYou: 'Merci de votre visite',
     contactTitle: 'Entrons en Contact',
     contactSubtitle: 'Discutons de votre projet',
     contactName: 'Nom',
@@ -252,14 +300,8 @@ function updateLanguage(lang) {
     el.textContent = lang === 'fr' ? el.getAttribute('data-fr') : el.getAttribute('data-en');
   });
   
-  // Mettre à jour le tagline et relancer l'animation typewriter
-  if (tagline) {
-    tagline.textContent = translations[lang].tagline;
-    // restart CSS animation
-    tagline.classList.remove('typewriter');
-    void tagline.offsetWidth;
-    tagline.classList.add('typewriter');
-  }
+  // Mettre à jour le tagline
+  if (tagline) tagline.textContent = translations[lang].tagline;
   
   // Mettre à jour la page About
   const aboutTitle = document.querySelector('.about-intro h2');
@@ -278,7 +320,8 @@ function updateLanguage(lang) {
   if (thankEl) thankEl.textContent = translations[lang].thankYou || (lang === 'fr' ? 'Merci de votre visite' : 'Thanks for your visit');
   if (thanksTitle) thanksTitle.textContent = lang === 'fr' ? 'Merci' : 'Thanks';
 
-  // (le code de mise à jour des liens CV est exécuté plus bas, après sélection des éléments DOM)
+  // Mettre à jour le CV (hrefs + iframe)
+  // (moved below so DOM elements are defined before updating their attributes)
   
   // Mettre à jour la page Contact
   const contactTitle = document.querySelector('.contact-section h2');
@@ -315,16 +358,15 @@ function updateLanguage(lang) {
   if (cvTitle) cvTitle.textContent = translations[lang].cvTitle;
   if (cvViewBtn) cvViewBtn.innerHTML = '<i class="fas fa-eye"></i> ' + translations[lang].cvView;
   if (cvDownloadBtn) cvDownloadBtn.innerHTML = '<i class="fas fa-download"></i> ' + translations[lang].cvDownload;
-
-  // Mettre à jour les href/download de CV et l'iframe si présents
-  const viewHrefFinal = lang === 'en' ? '../images/cv_anglais.pdf' : '../images/cv.pdf';
-  if (cvViewBtn) cvViewBtn.setAttribute('href', viewHrefFinal);
+  // Mettre à jour les hrefs et iframe du CV (après que cvViewBtn/cvDownloadBtn soient définis)
+  const cvEmbed = document.getElementById('cvEmbed');
+  const viewHref = lang === 'en' ? '../images/cv_anglais.pdf' : '../images/cv.pdf';
+  if (cvViewBtn) cvViewBtn.setAttribute('href', viewHref);
   if (cvDownloadBtn) {
-    cvDownloadBtn.setAttribute('href', viewHrefFinal);
+    cvDownloadBtn.setAttribute('href', viewHref);
     cvDownloadBtn.setAttribute('download', lang === 'en' ? 'CV_Hugo_Magret_EN.pdf' : 'CV_Hugo_Magret_FR.pdf');
   }
-  const cvEmbed = document.getElementById('cvEmbed');
-  if (cvEmbed) cvEmbed.setAttribute('src', viewHrefFinal);
+  if (cvEmbed) cvEmbed.setAttribute('src', viewHref);
   if (certTitle) certTitle.textContent = translations[lang].certTitle;
   if (certPixTitle) certPixTitle.textContent = translations[lang].certPix;
   if (certPixDesc) certPixDesc.textContent = translations[lang].certPixDesc;
@@ -369,11 +411,23 @@ window.addEventListener('load', ()=>{
     updateLanguage('fr');
   }
 
-  // Reveal on scroll (IntersectionObserver)
+  // Reveal on scroll (IntersectionObserver) with staggered children animation
   try {
+    function staggerReveal(el) {
+      // Add show to parent (so any parent-based CSS triggers)
+      el.classList.add('show');
+      // Find plausible children to stagger (icons, skill blocks, categories)
+      const children = el.querySelectorAll('.icon, .exp-category, .exp-item, .skill, .exp-block, .icons-grid > *');
+      children.forEach((c, i) => {
+        // apply incremental transition delay
+        c.style.transitionDelay = (i * 120) + 'ms';
+        c.classList.add('show');
+      });
+    }
+
     const io = new IntersectionObserver((entries)=>{
       entries.forEach(e=>{
-        if (e.isIntersecting) { e.target.classList.add('show'); io.unobserve(e.target); }
+        if (e.isIntersecting) { staggerReveal(e.target); io.unobserve(e.target); }
       });
     }, { threshold: 0.12 });
     document.querySelectorAll('.reveal-on-scroll').forEach(el => io.observe(el));

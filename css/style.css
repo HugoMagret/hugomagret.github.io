@@ -358,29 +358,22 @@ footer {
 }
   /* Reduced spacing between console and expertise for tighter layout */
   .console-container { margin-bottom: 0.75rem; }
-  .expertise { margin-top: 0.5rem; }
+  /* Push expertise further down so user must scroll to see it */
+  .expertise { margin-top: clamp(140px, 25vh, 360px); }
 
-  /* Typewriter effect for hero tagline */
-  .typewriter {
-    display: inline-block;
-    overflow: hidden;
-    white-space: nowrap;
-    border-right: .12em solid rgba(255,255,255,0.6);
-    width: 0;
-    animation: typing 2.6s steps(30,end) forwards, blink .75s step-end infinite;
-  }
-
-  @keyframes typing {
-    from { width: 0; }
-    to { width: 28ch; }
-  }
-  @keyframes blink {
-    50% { border-color: transparent; }
-  }
+  /* Tagline: letter-by-letter gentle fade-in (no cursor) */
+  .hero-tagline { display:inline-block; }
+  .hero-tagline .char { display:inline-block; opacity:0; transform: translateY(6px); }
+  .hero-tagline .char.animate { animation: charIn 360ms ease forwards; }
+  @keyframes charIn { to { opacity:1; transform: translateY(0); } }
 
   /* Reveal on scroll helper */
-  .reveal-on-scroll { opacity: 0; transform: translateY(18px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .reveal-on-scroll { opacity: 0; transform: translateY(24px); transition: opacity 0.7s cubic-bezier(.2,.9,.2,1), transform 0.7s cubic-bezier(.2,.9,.2,1); }
   .reveal-on-scroll.show { opacity: 1; transform: translateY(0); }
+
+  /* When a reveal block contains icons, we'll stagger their appearance */
+  .reveal-on-scroll .icons-grid .icon { opacity:0; transform: translateY(12px) scale(0.98); transition: opacity 420ms ease, transform 420ms ease; }
+  .reveal-on-scroll.show .icons-grid .icon { opacity:1; transform: translateY(0) scale(1); }
 
   /* Thank you card styling */
   .thanks-section { max-width: 900px; margin: 2rem auto; }
