@@ -3,7 +3,7 @@ const canvas = document.getElementById('bg'),
       ctx = canvas.getContext('2d');
 let w,h,parts=[],n=80;
 
-// Persistence key for particle state
+// Clé de persistance pour l'état des particules
 const PARTICLE_KEY = 'portfolio_particles_v1';
 let _lastParticleSave = 0;
 
@@ -29,7 +29,7 @@ function resize() {
   w = canvas.width = innerWidth;
   h = canvas.height = innerHeight;
 
-  // Try to restore saved particles; otherwise create new ones
+  // Restaurer les particules sauvegardées si disponibles ; sinon en créer de nouvelles
   const saved = loadParticles();
   parts = [];
   if (saved && Array.isArray(saved) && saved.length === n) {
@@ -69,12 +69,12 @@ function loadParticles() {
 function saveParticles() {
   try {
     const now = Date.now();
-    // throttle writes to once every ~800ms
-    if (now - _lastParticleSave < 800) return;
+  // limiter les écritures à environ une fois toutes les ~800ms
+  if (now - _lastParticleSave < 800) return;
     _lastParticleSave = now;
     const data = parts.map(p => ({ x: p.x, y: p.y, vx: p.vx, vy: p.vy, radius: p.radius, color: p.color }));
     localStorage.setItem(PARTICLE_KEY, JSON.stringify(data));
-  } catch (e) { /* ignore storage errors */ }
+  } catch (e) { /* ignorer les erreurs de stockage (localStorage plein / bloqué) */ }
 }
 
 // Fonction pour détecter et gérer les collisions entre particules
@@ -159,16 +159,16 @@ resize();
     ctx.fill();
   });
   
-    // Persist particle state periodically
-    saveParticles();
+    // Persister périodiquement l'état des particules
+      saveParticles();
 
     requestAnimationFrame(anim);
 })();
-// Save on page hide/unload to reduce lost state between navigations
+// Sauvegarder lors de la fermeture/masquage de la page pour éviter la perte d'état entre navigations
 window.addEventListener('beforeunload', saveParticles);
 document.addEventListener('visibilitychange', () => { if (document.hidden) saveParticles(); });
 
-// 2. Console typing with multiple colors & lines
+// 2. Simulation de saisie dans la console (plusieurs couleurs et lignes)
 const cb = document.getElementById('console-body'),
       linesFR = [
   "> git clone https://github.com/HugoMagret/hugomagret.github.io",

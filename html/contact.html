@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <title>Hugo Magret – Portfolio</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Styles -->
+  <!-- Feuilles de style -->
   <link rel="stylesheet" href="../css/style.css">
-  <!-- Font Awesome -->
+  <!-- Font Awesome (icônes) -->
   <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -15,7 +15,7 @@
   <!-- Fond animé (canvas) -->
   <canvas id="bg"></canvas>
 
-  <!-- Language switcher FR/EN -->
+  <!-- Sélecteur de langue FR/EN -->
   <div id="lang-switch">
     <button id="btn-fr" class="lang-btn active" title="Français">
       <img src="https://images.emojiterra.com/google/noto-emoji/unicode-16.0/color/svg/1f1eb-1f1f7.svg" alt="FR" width="40" height="40">
@@ -31,17 +31,17 @@
     <p class="hero-tagline">Coder le futur, une ligne à la fois.</p>
   </header>
 
-  <!-- Contact Section -->
+  <!-- Section Contact -->
   <main class="contact-section">
     <h2>Entrons en Contact</h2>
     <p class="subtitle">Discutons de votre projet</p>
 
     <form class="contact-form" id="contactForm" action="https://formspree.io/f/xzzjojbz" method="POST">
-      <!-- Honeypot -->
+  <!-- Champ honeypot (anti-spam) -->
       <input type="text" name="_gotcha" style="display:none">
       
-      <!-- Success Page -->
-      <input type="hidden" name="_next" value="https://hugomagret.github.io/html/contact.html?success=true">
+  <!-- Page de succès (redirection après envoi) -->
+  <input type="hidden" name="_next" value="https://hugomagret.github.io/html/contact.html?success=true">
       
       <div class="form-group">
         <label for="name">Nom</label>
