@@ -195,6 +195,7 @@ const translations = {
     aboutP2: "Que ce soit pour créer des interfaces utilisateur intuitives, automatiser des flux de travail avec des APIs puissantes, ou architecturer des systèmes pour une évolutivité transparente entre les environnements, je m'épanouis dans la création de solutions innovantes et pratiques.",
     aboutP3: "Au-delà du code, je gère mon propre serveur domestique, en améliorant constamment les performances et la sécurité. Quand je ne code pas, j'aime me détendre avec quelques jeux classiques. Si vous cherchez un passionné de technologie qui aime construire, faire évoluer et sécuriser des applications, connectons-nous !",
     gamesTitle: 'Détente & Mini-Jeux',
+      thankYou: 'Merci de votre visite',
     contactTitle: 'Entrons en Contact',
     contactSubtitle: 'Discutons de votre projet',
     contactName: 'Nom',
@@ -237,6 +238,8 @@ const translations = {
     certPixDesc: "Official digital skills certification recognized by the French government. Advanced level in development, security and data management.",
     certDate: "Date obtained:",
     projectsTitle: 'My Projects'
+    ,
+    thankYou: 'Thanks for your visit'
   }
 };
 
@@ -249,8 +252,14 @@ function updateLanguage(lang) {
     el.textContent = lang === 'fr' ? el.getAttribute('data-fr') : el.getAttribute('data-en');
   });
   
-  // Mettre à jour le tagline
-  if (tagline) tagline.textContent = translations[lang].tagline;
+  // Mettre à jour le tagline et relancer l'animation typewriter
+  if (tagline) {
+    tagline.textContent = translations[lang].tagline;
+    // restart CSS animation
+    tagline.classList.remove('typewriter');
+    void tagline.offsetWidth;
+    tagline.classList.add('typewriter');
+  }
   
   // Mettre à jour la page About
   const aboutTitle = document.querySelector('.about-intro h2');
@@ -262,6 +271,14 @@ function updateLanguage(lang) {
   if (aboutParagraphs[1]) aboutParagraphs[1].textContent = translations[lang].aboutP2;
   if (aboutParagraphs[2]) aboutParagraphs[2].textContent = translations[lang].aboutP3;
   if (gamesTitle) gamesTitle.textContent = translations[lang].gamesTitle;
+
+  // Mettre à jour le message de remerciement (About)
+  const thankEl = document.getElementById('thankYou');
+  const thanksTitle = document.getElementById('thanksTitle');
+  if (thankEl) thankEl.textContent = translations[lang].thankYou || (lang === 'fr' ? 'Merci de votre visite' : 'Thanks for your visit');
+  if (thanksTitle) thanksTitle.textContent = lang === 'fr' ? 'Merci' : 'Thanks';
+
+  // (le code de mise à jour des liens CV est exécuté plus bas, après sélection des éléments DOM)
   
   // Mettre à jour la page Contact
   const contactTitle = document.querySelector('.contact-section h2');
@@ -298,6 +315,16 @@ function updateLanguage(lang) {
   if (cvTitle) cvTitle.textContent = translations[lang].cvTitle;
   if (cvViewBtn) cvViewBtn.innerHTML = '<i class="fas fa-eye"></i> ' + translations[lang].cvView;
   if (cvDownloadBtn) cvDownloadBtn.innerHTML = '<i class="fas fa-download"></i> ' + translations[lang].cvDownload;
+
+  // Mettre à jour les href/download de CV et l'iframe si présents
+  const viewHrefFinal = lang === 'en' ? '../images/cv_anglais.pdf' : '../images/cv.pdf';
+  if (cvViewBtn) cvViewBtn.setAttribute('href', viewHrefFinal);
+  if (cvDownloadBtn) {
+    cvDownloadBtn.setAttribute('href', viewHrefFinal);
+    cvDownloadBtn.setAttribute('download', lang === 'en' ? 'CV_Hugo_Magret_EN.pdf' : 'CV_Hugo_Magret_FR.pdf');
+  }
+  const cvEmbed = document.getElementById('cvEmbed');
+  if (cvEmbed) cvEmbed.setAttribute('src', viewHrefFinal);
   if (certTitle) certTitle.textContent = translations[lang].certTitle;
   if (certPixTitle) certPixTitle.textContent = translations[lang].certPix;
   if (certPixDesc) certPixDesc.textContent = translations[lang].certPixDesc;
@@ -341,6 +368,16 @@ window.addEventListener('load', ()=>{
     if (cb) typeLines(linesFR);
     updateLanguage('fr');
   }
+
+  // Reveal on scroll (IntersectionObserver)
+  try {
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{
+        if (e.isIntersecting) { e.target.classList.add('show'); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.reveal-on-scroll').forEach(el => io.observe(el));
+  } catch(e) { /* ignore if not supported */ }
   
   // Vérifier le message de succès pour le formulaire de contact
   const urlParams = new URLSearchParams(window.location.search);

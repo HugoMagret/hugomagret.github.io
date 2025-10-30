@@ -21,10 +21,9 @@ Site web personnel présentant mes compétences, projets et expériences en dév
 
 - 🎨 **Design moderne** avec thème dark et accents cyan
 - 💻 **Console interactive** avec effet Matrix et commandes bash humoristiques
-- 🎮 **Mini-jeux intégrés** (Snake, Démineur, 2048, T-Rex)
-- 📱 **Responsive design** adapté à tous les écrans
+- �📱 **Responsive design** adapté à tous les écrans
 - 🔗 **Technologies cliquables** avec liens vers documentation
-- 📄 **CV consultable** directement en ligne
+ - 📄 **CV consultable** directement en ligne (anglais disponible via le sélecteur de langue)
 - 📬 **Formulaire de contact** fonctionnel
 
 ## 🛠️ Technologies
@@ -59,6 +58,7 @@ Ce site est automatiquement déployé via **GitHub Pages** à chaque push sur la
 
 - 💼 [LinkedIn](https://www.linkedin.com/in/hugo-magret-384429269)
 - 🐙 [GitHub](https://github.com/HugoMagret)
+- ♟️ [Chess.com - hugo0304](https://www.chess.com/member/hugo0304)
 - 🌐 [Portfolio](https://hugomagret.github.io)
 
 ---
