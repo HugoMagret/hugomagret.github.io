@@ -29,6 +29,10 @@ function resize() {
   w = canvas.width = innerWidth;
   h = canvas.height = innerHeight;
 
+  // Optimisation mobile : réduire les particules sur petits écrans
+  const isMobile = window.innerWidth < 768;
+  n = isMobile ? 30 : 80;
+
   // Restaurer les particules sauvegardées si disponibles ; sinon en créer de nouvelles
   const saved = loadParticles();
   parts = [];
@@ -680,8 +684,83 @@ function initPJAX() {
   });
 }
 
+// Lazy loading des icônes avec Intersection Observer
+function setupLazyLoading() {
+  const options = { threshold: 0.5 };
+  const imageObserver = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const img = entry.target;
+        if (img.dataset.src) {
+          img.src = img.dataset.src;
+          img.removeAttribute('data-src');
+          img.parentElement.classList.add('loaded');
+          observer.unobserve(img);
+        }
+      }
+    });
+  }, options);
+
+  document.querySelectorAll('.icon[data-src] img').forEach(img => {
+    imageObserver.observe(img);
+  });
+}
+
+// Animations de fade-in sur page load
+function setupFadeInAnimations() {
+  // Attendre que le DOM soit complètement peint avant de déclencher les animations
+  requestAnimationFrame(() => {
+    // Les animations CSS se déclenchent automatiquement grâce à @keyframes
+    // Les délais d'animation sont définis dans le CSS via [data-fade-in="..."]
+  });
+}
+
+// Mise à jour du fil d'Ariane (breadcrumb) en fonction de la page actuelle
+function updateBreadcrumb() {
+  const breadcrumb = document.querySelector('.breadcrumb');
+  if (!breadcrumb) return;
+
+  const current = document.title.split(' - ')[0] || 'Accueil';
+  const pathname = window.location.pathname;
+  
+  let breadcrumbHTML = '<span class="breadcrumb-item" data-nav="index.html">Accueil</span>';
+  
+  if (!pathname.includes('index') && pathname !== '/') {
+    breadcrumbHTML += '<span class="breadcrumb-separator">/</span>';
+    
+    if (pathname.includes('about')) {
+      breadcrumbHTML += '<span class="breadcrumb-item active">À propos</span>';
+    } else if (pathname.includes('projets')) {
+      breadcrumbHTML += '<span class="breadcrumb-item active">Projets</span>';
+    } else if (pathname.includes('cv')) {
+      breadcrumbHTML += '<span class="breadcrumb-item active">CV</span>';
+    } else if (pathname.includes('contact')) {
+      breadcrumbHTML += '<span class="breadcrumb-item active">Contact</span>';
+    }
+  } else {
+    breadcrumbHTML = '<span class="breadcrumb-item active">Accueil</span>';
+  }
+  
+  breadcrumb.innerHTML = breadcrumbHTML;
+  
+  // Ajouter des listeners de navigation au breadcrumb
+  breadcrumb.querySelectorAll('[data-nav]').forEach(item => {
+    item.addEventListener('click', function() {
+      const page = this.dataset.nav;
+      if (page && window.loadPage) {
+        window.loadPage('/' + page);
+      }
+    });
+  });
+}
+
 // start PJAX
 try{ initPJAX(); }catch(e){/* ignore */}
+
+// Initialiser lazy loading et animations
+try{ setupLazyLoading(); }catch(e){}
+try{ setupFadeInAnimations(); }catch(e){}
+try{ updateBreadcrumb(); }catch(e){}
 
 // run initial tagline animation
 try{ animateTagline(); }catch(e){}
