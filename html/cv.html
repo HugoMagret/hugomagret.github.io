@@ -2,20 +2,14 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
+  <meta name="robots" content="noindex, follow">
   <title>Hugo Magret – Portfolio</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="robots" content="index, follow">
   <!-- Feuilles de style -->
   <link rel="stylesheet" href="../css/style.css">
   <!-- Font Awesome (icônes) -->
   <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- Service Worker pour offline support -->
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js').catch(() => {});
-    }
-  </script>
 </head>
 <body>
 
@@ -32,15 +26,8 @@
     </button>
   </div>
 
-  <!-- Fil d'Ariane (Breadcrumb) -->
-  <nav class="breadcrumb" data-fade-in="breadcrumb">
-    <span class="breadcrumb-item" data-nav="../index.html">Accueil</span>
-    <span class="breadcrumb-separator">/</span>
-    <span class="breadcrumb-item active">CV</span>
-  </nav>
-
   <!-- Header principal -->
-  <header class="hero" data-fade-in="hero">
+  <header class="hero">
     <h1 class="hero-name">Hugo Magret</h1>
     <p class="hero-tagline">Coder le futur, une ligne à la fois.</p>
   </header>

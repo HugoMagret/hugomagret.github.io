@@ -1,10 +1,2 @@
-# Robots.txt - Contrôle du crawling des moteurs de recherche
 User-agent: *
-Allow: /
-Disallow: /images/*.pdf
-
-# Éviter crawl excessif
-Crawl-delay: 1
-
-# Sitemap (optionnel, ajouter plus tard si besoin)
-# Sitemap: https://hugomagret.github.io/sitemap.xml
+Disallow: /

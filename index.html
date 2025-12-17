@@ -2,19 +2,11 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
+  <meta name="robots" content="noindex, follow">
   <title>Hugo Magret – Portfolio</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Contrôle crawling : indexer le portfolio (optionnel : mettre noindex si privé) -->
-  <meta name="robots" content="index, follow">
   <!-- Feuille de style -->
   <link rel="stylesheet" href="css/style.css">
-  
-  <!-- Service Worker pour offline & cache -->
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js').catch(err => console.log('SW registration failed:', err));
-    }
-  </script>
   <!-- Font Awesome (icônes) -->
   <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -36,18 +28,13 @@
   <!-- Héros -->
   <main id="pjax-content">
   <!-- Héros (section) -->
-    <header class="hero" data-fade-in="hero">
+    <header class="hero">
       <h1 class="hero-name">Hugo Magret</h1>
       <p id="hero-tagline" class="hero-tagline">Coder le futur, une ligne à la fois.</p>
     </header>
 
-    <!-- Fil d'Ariane (Breadcrumb) : où suis-je ? -->
-    <nav class="breadcrumb" data-fade-in="breadcrumb">
-      <span class="breadcrumb-item active">Accueil</span>
-    </nav>
-
     <!-- Console fixe -->
-    <section class="console-container" data-fade-in="console">
+    <section class="console-container">
       <div class="console-header">
         <span class="dot red"></span>
         <span class="dot yellow"></span>
@@ -57,22 +44,22 @@
     </section>
 
     <!-- Expertise -->
-    <section class="expertise" data-fade-in="expertise">
+    <section class="expertise">
       <h2 class="reveal-on-scroll" data-fr="Compétences Techniques" data-en="Technical Skills" style="font-size:2.7rem;font-weight:900;color:var(--accent);margin-bottom:2.5rem;text-transform:uppercase;letter-spacing:2px;">Compétences Techniques</h2>
 
     <!-- 1. Langages & Web -->
     <div class="exp-category reveal-on-scroll" style="margin-bottom:20px;">
       <h3 data-fr="Langages & Web" data-en="Languages & Web" style="font-size:1.35rem;font-weight:700;color:var(--fg);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">Langages & Web</h3>
       <div class="icons-grid">
-        <a href="https://fr.wikipedia.org/wiki/Java_(langage)" target="_blank" class="icon" data-tooltip="Java"><img data-src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" width="56" height="56" alt="Java"/></a>
-        <a href="https://fr.wikipedia.org/wiki/JavaScript" target="_blank" class="icon" data-tooltip="JavaScript"><img data-src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" width="56" height="56" alt="JavaScript"/></a>
-        <a href="https://fr.wikipedia.org/wiki/TypeScript" target="_blank" class="icon" data-tooltip="TypeScript"><img data-src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg" width="56" height="56" alt="TypeScript"/></a>
-        <a href="https://fr.wikipedia.org/wiki/Kotlin_(langage)" target="_blank" class="icon" data-tooltip="Kotlin"><img data-src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kotlin/kotlin-original.svg" width="56" height="56" alt="Kotlin"/></a>
-        <a href="https://fr.wikipedia.org/wiki/Bourne-Again_shell" target="_blank" class="icon icon-light-bg" data-tooltip="Bash"><img data-src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bash/bash-original.svg" width="56" height="56" alt="Bash"/></a>
+        <a href="https://fr.wikipedia.org/wiki/Java_(langage)" target="_blank" class="icon" data-tooltip="Java"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" width="56" height="56" alt="Java"/></a>
+        <a href="https://fr.wikipedia.org/wiki/JavaScript" target="_blank" class="icon" data-tooltip="JavaScript"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" width="56" height="56" alt="JavaScript"/></a>
+        <a href="https://fr.wikipedia.org/wiki/TypeScript" target="_blank" class="icon" data-tooltip="TypeScript"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg" width="56" height="56" alt="TypeScript"/></a>
+        <a href="https://fr.wikipedia.org/wiki/Kotlin_(langage)" target="_blank" class="icon" data-tooltip="Kotlin"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kotlin/kotlin-original.svg" width="56" height="56" alt="Kotlin"/></a>
+        <a href="https://fr.wikipedia.org/wiki/Bourne-Again_shell" target="_blank" class="icon icon-light-bg" data-tooltip="Bash"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bash/bash-original.svg" width="56" height="56" alt="Bash"/></a>
         <a href="https://fr.wikipedia.org/wiki/PowerShell" target="_blank" class="icon" data-tooltip="PowerShell"><i class="fas fa-terminal" style="font-size: 3.5rem; color: #012456;"></i></a>
-        <a href="https://fr.wikipedia.org/wiki/OCaml" target="_blank" class="icon" data-tooltip="OCaml"><img data-src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/ocaml/ocaml-original.svg" width="56" height="56" alt="OCaml"/></a>
-        <a href="https://fr.wikipedia.org/wiki/HTML5" target="_blank" class="icon" data-tooltip="HTML5"><img data-src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" width="56" height="56" alt="HTML5"/></a>
-        <a href="https://fr.wikipedia.org/wiki/Feuilles_de_style_en_cascade" target="_blank" class="icon" data-tooltip="CSS3"><img data-src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" width="56" height="56" alt="CSS3"/></a>
+        <a href="https://fr.wikipedia.org/wiki/OCaml" target="_blank" class="icon" data-tooltip="OCaml"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/ocaml/ocaml-original.svg" width="56" height="56" alt="OCaml"/></a>
+        <a href="https://fr.wikipedia.org/wiki/HTML5" target="_blank" class="icon" data-tooltip="HTML5"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" width="56" height="56" alt="HTML5"/></a>
+        <a href="https://fr.wikipedia.org/wiki/Feuilles_de_style_en_cascade" target="_blank" class="icon" data-tooltip="CSS3"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" width="56" height="56" alt="CSS3"/></a>
       </div>
     </div>
 
@@ -80,14 +67,14 @@
     <div class="exp-category reveal-on-scroll" style="margin-bottom:20px;">
       <h3 data-fr="Frameworks & Bibliothèques" data-en="Frameworks & Libraries" style="font-size:1.35rem;font-weight:700;color:var(--fg);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">Frameworks & Bibliothèques</h3>
       <div class="icons-grid">
-        <a href="https://fr.wikipedia.org/wiki/Angular" target="_blank" class="icon" data-tooltip="Angular"><img data-src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/angularjs/angularjs-original.svg" width="56" height="56" alt="Angular"/></a>
-        <a href="https://fr.wikipedia.org/wiki/React" target="_blank" class="icon" data-tooltip="React"><img data-src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" width="56" height="56" alt="React"/></a>
-        <a href="https://fr.wikipedia.org/wiki/Node.js" target="_blank" class="icon" data-tooltip="Node.js"><img data-src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" width="56" height="56" alt="Node.js"/></a>
-        <a href="https://fr.wikipedia.org/wiki/Ionic_(framework)" target="_blank" class="icon" data-tooltip="Ionic"><img data-src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/ionic/ionic-original.svg" width="56" height="56" alt="Ionic"/></a>
-        <a href="https://fr.wikipedia.org/wiki/WordPress" target="_blank" class="icon icon-light-bg" data-tooltip="WordPress"><img data-src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/wordpress/wordpress-plain.svg" width="56" height="56" alt="WordPress"/></a>
+        <a href="https://fr.wikipedia.org/wiki/Angular" target="_blank" class="icon" data-tooltip="Angular"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/angularjs/angularjs-original.svg" width="56" height="56" alt="Angular"/></a>
+        <a href="https://fr.wikipedia.org/wiki/React" target="_blank" class="icon" data-tooltip="React"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" width="56" height="56" alt="React"/></a>
+        <a href="https://fr.wikipedia.org/wiki/Node.js" target="_blank" class="icon" data-tooltip="Node.js"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" width="56" height="56" alt="Node.js"/></a>
+        <a href="https://fr.wikipedia.org/wiki/Ionic_(framework)" target="_blank" class="icon" data-tooltip="Ionic"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/ionic/ionic-original.svg" width="56" height="56" alt="Ionic"/></a>
+        <a href="https://fr.wikipedia.org/wiki/WordPress" target="_blank" class="icon icon-light-bg" data-tooltip="WordPress"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/wordpress/wordpress-plain.svg" width="56" height="56" alt="WordPress"/></a>
         <a href="https://fr.wikipedia.org/wiki/Leaflet_(biblioth%C3%A8que)" target="_blank" class="icon" data-tooltip="Leaflet"><i class="fas fa-map-marked-alt" style="font-size: 3.5rem; color: #199900;"></i></a>
         <a href="https://fr.wikipedia.org/wiki/OSMDroid" target="_blank" class="icon" data-tooltip="OSMDroid"><i class="fas fa-map" style="font-size: 3.5rem; color: #7EBC49;"></i></a>
-        <a href="https://fr.wikipedia.org/wiki/Jupyter" target="_blank" class="icon" data-tooltip="Jupyter"><img data-src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/jupyter/jupyter-original.svg" width="56" height="56" alt="Jupyter"/></a>
+        <a href="https://fr.wikipedia.org/wiki/Jupyter" target="_blank" class="icon" data-tooltip="Jupyter"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/jupyter/jupyter-original.svg" width="56" height="56" alt="Jupyter"/></a>
       </div>
     </div>
 
@@ -95,19 +82,19 @@
     <div class="exp-category reveal-on-scroll" style="margin-bottom:20px;">
       <h3 data-fr="Bases de Données & DevOps" data-en="Databases & DevOps" style="font-size:1.35rem;font-weight:700;color:var(--fg);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">Bases de Données & DevOps</h3>
       <div class="icons-grid">
-        <a href="https://fr.wikipedia.org/wiki/SQL" target="_blank" class="icon" data-tooltip="SQL"><img data-src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" width="56" height="56" alt="SQL"/></a>
-        <a href="https://fr.wikipedia.org/wiki/PostgreSQL" target="_blank" class="icon" data-tooltip="PostgreSQL"><img data-src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg" width="56" height="56" alt="PostgreSQL"/></a>
-        <a href="https://fr.wikipedia.org/wiki/MongoDB" target="_blank" class="icon" data-tooltip="MongoDB"><img data-src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg" width="56" height="56" alt="MongoDB"/></a>
-        <a href="https://fr.wikipedia.org/wiki/SQLite" target="_blank" class="icon" data-tooltip="SQLite"><img data-src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sqlite/sqlite-original.svg" width="56" height="56" alt="SQLite"/></a>
-        <a href="https://fr.wikipedia.org/wiki/MariaDB" target="_blank" class="icon" data-tooltip="MariaDB"><img data-src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mariadb/mariadb-original.svg" width="56" height="56" alt="MariaDB"/></a>
-        <a href="https://fr.wikipedia.org/wiki/Git" target="_blank" class="icon" data-tooltip="Git"><img data-src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" width="56" height="56" alt="Git"/></a>
-        <a href="https://fr.wikipedia.org/wiki/GitHub" target="_blank" class="icon icon-light-bg" data-tooltip="GitHub"><img data-src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" width="56" height="56" alt="GitHub"/></a>
-        <a href="https://fr.wikipedia.org/wiki/Docker_(logiciel)" target="_blank" class="icon" data-tooltip="Docker"><img data-src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" width="56" height="56" alt="Docker"/></a>
-        <a href="https://fr.wikipedia.org/wiki/Linux" target="_blank" class="icon" data-tooltip="Linux"><img data-src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linux/linux-original.svg" width="56" height="56" alt="Linux"/></a>
-        <a href="https://fr.wikipedia.org/wiki/Visual_Studio_Code" target="_blank" class="icon" data-tooltip="VS Code"><img data-src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.svg" width="56" height="56" alt="VS Code"/></a>
-        <a href="https://fr.wikipedia.org/wiki/IntelliJ_IDEA" target="_blank" class="icon" data-tooltip="IntelliJ IDEA"><img data-src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/intellij/intellij-original.svg" width="56" height="56" alt="IntelliJ IDEA"/></a>
-        <a href="https://fr.wikipedia.org/wiki/PyCharm" target="_blank" class="icon" data-tooltip="PyCharm"><img data-src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pycharm/pycharm-original.svg" width="56" height="56" alt="PyCharm"/></a>
-        <a href="https://fr.wikipedia.org/wiki/Eclipse_(IDE)" target="_blank" class="icon" data-tooltip="Eclipse"><img data-src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/eclipse/eclipse-original.svg" width="56" height="56" alt="Eclipse"/></a>
+        <a href="https://fr.wikipedia.org/wiki/SQL" target="_blank" class="icon" data-tooltip="SQL"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" width="56" height="56" alt="SQL"/></a>
+        <a href="https://fr.wikipedia.org/wiki/PostgreSQL" target="_blank" class="icon" data-tooltip="PostgreSQL"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg" width="56" height="56" alt="PostgreSQL"/></a>
+        <a href="https://fr.wikipedia.org/wiki/MongoDB" target="_blank" class="icon" data-tooltip="MongoDB"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg" width="56" height="56" alt="MongoDB"/></a>
+        <a href="https://fr.wikipedia.org/wiki/SQLite" target="_blank" class="icon" data-tooltip="SQLite"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sqlite/sqlite-original.svg" width="56" height="56" alt="SQLite"/></a>
+        <a href="https://fr.wikipedia.org/wiki/MariaDB" target="_blank" class="icon" data-tooltip="MariaDB"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mariadb/mariadb-original.svg" width="56" height="56" alt="MariaDB"/></a>
+        <a href="https://fr.wikipedia.org/wiki/Git" target="_blank" class="icon" data-tooltip="Git"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" width="56" height="56" alt="Git"/></a>
+        <a href="https://fr.wikipedia.org/wiki/GitHub" target="_blank" class="icon icon-light-bg" data-tooltip="GitHub"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" width="56" height="56" alt="GitHub"/></a>
+        <a href="https://fr.wikipedia.org/wiki/Docker_(logiciel)" target="_blank" class="icon" data-tooltip="Docker"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" width="56" height="56" alt="Docker"/></a>
+        <a href="https://fr.wikipedia.org/wiki/Linux" target="_blank" class="icon" data-tooltip="Linux"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linux/linux-original.svg" width="56" height="56" alt="Linux"/></a>
+        <a href="https://fr.wikipedia.org/wiki/Visual_Studio_Code" target="_blank" class="icon" data-tooltip="VS Code"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.svg" width="56" height="56" alt="VS Code"/></a>
+        <a href="https://fr.wikipedia.org/wiki/IntelliJ_IDEA" target="_blank" class="icon" data-tooltip="IntelliJ IDEA"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/intellij/intellij-original.svg" width="56" height="56" alt="IntelliJ IDEA"/></a>
+        <a href="https://fr.wikipedia.org/wiki/PyCharm" target="_blank" class="icon" data-tooltip="PyCharm"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pycharm/pycharm-original.svg" width="56" height="56" alt="PyCharm"/></a>
+        <a href="https://fr.wikipedia.org/wiki/Eclipse_(IDE)" target="_blank" class="icon" data-tooltip="Eclipse"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/eclipse/eclipse-original.svg" width="56" height="56" alt="Eclipse"/></a>
         <a href="https://fr.wikipedia.org/wiki/Xcode" target="_blank" class="icon" data-tooltip="Xcode"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/xcode/xcode-original.svg" width="56" height="56" alt="Xcode"/></a>
         <a href="https://fr.wikipedia.org/wiki/Android_Studio" target="_blank" class="icon" data-tooltip="Android Studio"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/androidstudio/androidstudio-original.svg" width="56" height="56" alt="Android Studio"/></a>
         <a href="https://fr.wikipedia.org/wiki/Android_(syst%C3%A8me_d%27exploitation)" target="_blank" class="icon" data-tooltip="Android"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/android/android-original.svg" width="56" height="56" alt="Android"/></a>
@@ -168,5 +155,16 @@
 
   <!-- Script principal -->
   <script src="js/script.js"></script>
+
+  <!-- Enregistrer Service Worker pour fonctionnement offline -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/service-worker.js').then(() => {
+        console.log('Service Worker enregistré ✓');
+      }).catch((err) => {
+        console.warn('Erreur Service Worker :', err);
+      });
+    }
+  </script>
 </body>
 </html>
