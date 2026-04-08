@@ -282,6 +282,7 @@ footer {
 .project-card.reverse .project-demo {
   order: 1;
 }
+.project-info h2,
 .project-info h3 {
   font-size: 1.8rem;
   color: var(--accent);
@@ -299,6 +300,20 @@ footer {
   margin-bottom: 20px;
 }
 .tag {
+  background: rgba(0,255,255,0.1);
+  color: var(--accent);
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  border: 1px solid var(--accent);
+}
+.tech-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.tech-stack span {
   background: rgba(0,255,255,0.1);
   color: var(--accent);
   padding: 5px 15px;
