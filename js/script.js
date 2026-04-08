@@ -1,180 +1,76 @@
-// 1. Canvas particles avec collision
+// 1. Canvas particles (Graphe de proximite)
 const canvas = document.getElementById('bg'),
       ctx = canvas.getContext('2d');
-let w,h,parts=[],n=80;
+let w, h, parts = [], n = 80;
 
-// Adapter le nombre de particules selon la taille d'écran (optimisation mobile)
 function getParticleCount() {
-  if (window.innerWidth < 768) return 30;  // mobile : 30 particules
-  if (window.innerWidth < 1024) return 50; // tablette : 50 particules
-  return 80; // desktop : 80 particules
-}
-n = getParticleCount();
-
-// Clé de persistance pour l'état des particules
-const PARTICLE_KEY = 'portfolio_particles_v1';
-let _lastParticleSave = 0;
-
-// Palette de 10 couleurs douces et harmonieuses
-const colors = [
-  '#00FFFF', // Cyan bleu (couleur de départ)
-  '#4FC3F7', // Bleu ciel doux
-  '#81C784', // Vert menthe
-  '#FFB74D', // Orange pêche
-  '#BA68C8', // Violet pastel
-  '#FF8A80', // Rose corail doux
-  '#64B5F6', // Bleu clair
-  '#AED581', // Vert pomme doux
-  '#FFD54F', // Jaune doux
-  '#9575CD'  // Lavande
-];
-
-function getRandomColor() {
-  return colors[Math.floor(Math.random() * colors.length)];
+  if (window.innerWidth < 768) return 40;
+  if (window.innerWidth < 1024) return 60;
+  return 90;
 }
 
 function resize() {
-  w = canvas.width = innerWidth;
-  h = canvas.height = innerHeight;
-
-  // Restaurer les particules sauvegardées si disponibles ; sinon en créer de nouvelles
-  const saved = loadParticles();
+  w = canvas.width = window.innerWidth;
+  h = canvas.height = window.innerHeight;
+  n = getParticleCount();
   parts = [];
-  if (saved && Array.isArray(saved) && saved.length === n) {
-    saved.forEach(p => {
-      parts.push({
-        x: Math.max((p.radius||2), Math.min(w - (p.radius||2), p.x)),
-        y: Math.max((p.radius||2), Math.min(h - (p.radius||2), p.y)),
-        vx: p.vx || (Math.random()-0.5)*0.5,
-        vy: p.vy || (Math.random()-0.5)*0.5,
-        radius: p.radius || 2,
-        color: p.color || '#00FFFF'
-      });
+
+  for (let i = 0; i < n; i++) {
+    parts.push({
+      x: Math.random() * w,
+      y: Math.random() * h,
+      vx: (Math.random() - 0.5) * 1.2,
+      vy: (Math.random() - 0.5) * 1.2,
+      radius: Math.random() * 1.5 + 0.5
     });
-  } else {
-    for (let i = 0; i < n; i++) {
-      parts.push({
-        x: Math.random() * w,
-        y: Math.random() * h,
-        vx: (Math.random() - 0.5) * 0.5,
-        vy: (Math.random() - 0.5) * 0.5,
-        radius: 2,
-        color: '#00FFFF' // Toutes démarrent en bleu cyan
-      });
-    }
-  }
-}
-
-function loadParticles() {
-  try {
-    const raw = localStorage.getItem(PARTICLE_KEY);
-    if (!raw) return null;
-    const arr = JSON.parse(raw);
-    return Array.isArray(arr) ? arr : null;
-  } catch (e) { return null; }
-}
-
-function saveParticles() {
-  try {
-    const now = Date.now();
-  // limiter les écritures à environ une fois toutes les ~800ms
-  if (now - _lastParticleSave < 800) return;
-    _lastParticleSave = now;
-    const data = parts.map(p => ({ x: p.x, y: p.y, vx: p.vx, vy: p.vy, radius: p.radius, color: p.color }));
-    localStorage.setItem(PARTICLE_KEY, JSON.stringify(data));
-  } catch (e) { /* ignorer les erreurs de stockage (localStorage plein / bloqué) */ }
-}
-
-// Fonction pour détecter et gérer les collisions entre particules
-function checkCollision(p1, p2) {
-  const dx = p2.x - p1.x;
-  const dy = p2.y - p1.y;
-  const distance = Math.sqrt(dx * dx + dy * dy);
-  const minDist = p1.radius + p2.radius;
-  
-  if (distance < minDist) {
-    // Changer les couleurs des deux particules après collision
-    p1.color = getRandomColor();
-    p2.color = getRandomColor();
-    
-    // Calculer l'angle de collision
-    const angle = Math.atan2(dy, dx);
-    
-    // Calculer les vitesses relatives
-    const sin = Math.sin(angle);
-    const cos = Math.cos(angle);
-    
-    // Rotation des vitesses
-    const vx1 = p1.vx * cos + p1.vy * sin;
-    const vy1 = p1.vy * cos - p1.vx * sin;
-    const vx2 = p2.vx * cos + p2.vy * sin;
-    const vy2 = p2.vy * cos - p2.vx * sin;
-    
-    // Échanger les vitesses (collision élastique)
-    const vx1Final = vx2;
-    const vx2Final = vx1;
-    
-    // Rotation inverse pour retrouver les vraies vitesses
-    p1.vx = vx1Final * cos - vy1 * sin;
-    p1.vy = vy1 * cos + vx1Final * sin;
-    p2.vx = vx2Final * cos - vy2 * sin;
-    p2.vy = vy2 * cos + vx2Final * sin;
-    
-    // Séparer les particules pour éviter qu'elles restent collées
-    const overlap = minDist - distance;
-    const separateX = (overlap / 2) * cos;
-    const separateY = (overlap / 2) * sin;
-    
-    p1.x -= separateX;
-    p1.y -= separateY;
-    p2.x += separateX;
-    p2.y += separateY;
   }
 }
 
 window.addEventListener('resize', resize);
 resize();
 
-(function anim(){
-  ctx.fillStyle='rgba(0,0,0,0.1)';
-  ctx.fillRect(0,0,w,h);
-  
-  // Mettre à jour les positions
-  parts.forEach(p=>{
-    p.x+=p.vx; p.y+=p.vy;
-    
-    // Rebond sur les bords
-    if(p.x<p.radius || p.x>w-p.radius) p.vx*=-1;
-    if(p.y<p.radius || p.y>h-p.radius) p.vy*=-1;
-    
-    // Garder dans les limites
-    p.x = Math.max(p.radius, Math.min(w-p.radius, p.x));
-    p.y = Math.max(p.radius, Math.min(h-p.radius, p.y));
-  });
-  
-  // Vérifier les collisions entre toutes les particules
-  for(let i=0; i<parts.length; i++) {
-    for(let j=i+1; j<parts.length; j++) {
-      checkCollision(parts[i], parts[j]);
-    }
-  }
-  
-  // Dessiner les particules avec leur couleur
-  parts.forEach(p=>{
+(function anim() {
+  ctx.clearRect(0, 0, w, h);
+
+  // Parametres de style lies a la variable CSS --accent (#00FFFF)
+  ctx.fillStyle = '#00FFFF';
+  ctx.strokeStyle = '#00FFFF';
+
+  // Mise a jour spatiale et affichage des noeuds
+  parts.forEach(p => {
+    p.x += p.vx;
+    p.y += p.vy;
+
+    // Inversion du vecteur velocite aux frontieres du canvas
+    if (p.x < 0 || p.x > w) p.vx *= -1;
+    if (p.y < 0 || p.y > h) p.vy *= -1;
+
     ctx.beginPath();
-    ctx.arc(p.x, p.y, p.radius, 0, 2*Math.PI);
-    ctx.fillStyle=p.color; 
+    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
     ctx.fill();
   });
-  
-    // Persister périodiquement l'état des particules
-      saveParticles();
 
-    requestAnimationFrame(anim);
+  // Calcul des aretes par distance euclidienne
+  for (let i = 0; i < parts.length; i++) {
+    for (let j = i + 1; j < parts.length; j++) {
+      const dx = parts[i].x - parts[j].x;
+      const dy = parts[i].y - parts[j].y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+
+      if (dist < 130) {
+        ctx.beginPath();
+        // Opacite inversement proportionnelle a la distance
+        ctx.lineWidth = 1 - (dist / 130);
+        ctx.globalAlpha = 1 - (dist / 130);
+        ctx.moveTo(parts[i].x, parts[i].y);
+        ctx.lineTo(parts[j].x, parts[j].y);
+        ctx.stroke();
+      }
+    }
+  }
+  ctx.globalAlpha = 1;
+  requestAnimationFrame(anim);
 })();
-// Sauvegarder lors de la fermeture/masquage de la page pour éviter la perte d'état entre navigations
-window.addEventListener('beforeunload', saveParticles);
-document.addEventListener('visibilitychange', () => { if (document.hidden) saveParticles(); });
 
 // 2. Simulation de saisie dans la console (plusieurs couleurs et lignes)
 const cb = document.getElementById('console-body'),
@@ -268,7 +164,18 @@ const translations = {
     certPix: 'Certification Pix',
     certPixDesc: "Certification officielle des compétences numériques reconnue par l'État français. Niveau avancé en développement, sécurité et gestion de données.",
     certDate: "Date d'obtention :",
-    projectsTitle: 'Mes Projets'
+    projectsTitle: 'Mes Projets',
+    footerText: 'Hugo Magret – 2025 Tous droits réservés',
+    proj1Title: "Moteur de Jeu vidéo (Tower Defense)",
+    proj1Desc: "Développement en C++ d'un jeu vidéo exploitant la bibliothèque multimédia SFML. Implémentation d'une architecture orientée objet pour un moteur gérant les collisions matérielles, l'affichage de sprites dynamiques et la logique de pathfinding des entités par vagues.",
+    proj2Title: "Génie Logiciel : Réponse à Appel d'Offres",
+    proj2Desc: "Analyse des spécifications fonctionnelles pour le parc Terra Botanica. Modélisation UML de l'architecture logicielle, exécution d'un benchmark concurrentiel, définition du chiffrage et déploiement d'une maquette interactive.",
+    proj3Title: "Système Expert (Intelligence Artificielle)",
+    proj3Desc: "Conception d'un moteur d'inférence d'ordre Zéro+ intégrant les algorithmes de résolution par chaînage avant et arrière. Déploiement de modules de gestion de conflits et de contrôle de la cohérence d'une base de connaissances.",
+    proj4Title: "Application Mobile Native",
+    proj4Desc: "Programmation d'une application Android en Kotlin. Mise en œuvre d'une base de données locale pour la persistance de l'information, gestion du cycle de vie des activités et exécution des algorithmes de priorisation asynchrone.",
+    projCode: 'Code',
+    projDemo: 'Maquette'
   },
   en: {
     tagline: 'Coding the future, one line at a time.',
@@ -293,9 +200,19 @@ const translations = {
     certPix: 'Pix Certification',
     certPixDesc: "Official digital skills certification recognized by the French government. Advanced level in development, security and data management.",
     certDate: "Date obtained:",
-    projectsTitle: 'My Projects'
-    ,
-    thankYou: 'Thanks for your visit'
+    projectsTitle: 'My Projects',
+    thankYou: 'Thanks for your visit',
+    footerText: 'Hugo Magret – 2025 All rights reserved',
+    proj1Title: 'Video Game Engine (Tower Defense)',
+    proj1Desc: 'C++ development of a video game using the SFML multimedia library. Object-oriented architecture implementation for an engine handling hardware collisions, dynamic sprite rendering, and wave-based entity pathfinding logic.',
+    proj2Title: 'Software Engineering: Call for Tenders',
+    proj2Desc: 'Functional specifications analysis for the Terra Botanica park. UML modeling of the software architecture, competitive benchmark execution, cost estimation definition, and interactive mockup deployment.',
+    proj3Title: 'Expert System (Artificial Intelligence)',
+    proj3Desc: 'Design of a Zero+ order inference engine integrating forward and backward chaining resolution algorithms. Deployment of conflict management modules and knowledge base consistency control.',
+    proj4Title: 'Native Mobile Application',
+    proj4Desc: 'Android application programming in Kotlin. Implementation of a local database for data persistence, activity lifecycle management, and execution of asynchronous prioritization algorithms.',
+    projCode: 'Code',
+    projDemo: 'Mockup'
   }
 };
 
@@ -379,10 +296,44 @@ function updateLanguage(lang) {
   if (certPixTitle) certPixTitle.textContent = translations[lang].certPix;
   if (certPixDesc) certPixDesc.textContent = translations[lang].certPixDesc;
   if (certDate) certDate.textContent = translations[lang].certDate + ' ';
+
+  // Mettre a jour le pied de page
+  const footerText = document.querySelector('.footer-left');
+  if (footerText) footerText.textContent = translations[lang].footerText;
   
-  // Mettre à jour la page Projets
+  // Mettre a jour la page Projets
   const projectsTitle = document.querySelector('.projects-section h2');
   if (projectsTitle) projectsTitle.textContent = translations[lang].projectsTitle;
+  const projectCards = document.querySelectorAll('.project-card');
+  if (projectCards.length === 4) {
+    const p1Title = projectCards[0].querySelector('h2');
+    const p1Desc = projectCards[0].querySelector('p');
+    const p1Link = projectCards[0].querySelector('.project-links a');
+    if (p1Title) p1Title.textContent = translations[lang].proj1Title;
+    if (p1Desc) p1Desc.textContent = translations[lang].proj1Desc;
+    if (p1Link) p1Link.innerHTML = '<i class="fab fa-github"></i> ' + translations[lang].projCode;
+
+    const p2Title = projectCards[1].querySelector('h2');
+    const p2Desc = projectCards[1].querySelector('p');
+    const p2Link = projectCards[1].querySelector('.project-links a');
+    if (p2Title) p2Title.textContent = translations[lang].proj2Title;
+    if (p2Desc) p2Desc.textContent = translations[lang].proj2Desc;
+    if (p2Link) p2Link.innerHTML = '<i class="fas fa-external-link-alt"></i> ' + translations[lang].projDemo;
+
+    const p3Title = projectCards[2].querySelector('h2');
+    const p3Desc = projectCards[2].querySelector('p');
+    const p3Link = projectCards[2].querySelector('.project-links a');
+    if (p3Title) p3Title.textContent = translations[lang].proj3Title;
+    if (p3Desc) p3Desc.textContent = translations[lang].proj3Desc;
+    if (p3Link) p3Link.innerHTML = '<i class="fab fa-github"></i> ' + translations[lang].projCode;
+
+    const p4Title = projectCards[3].querySelector('h2');
+    const p4Desc = projectCards[3].querySelector('p');
+    const p4Link = projectCards[3].querySelector('.project-links a');
+    if (p4Title) p4Title.textContent = translations[lang].proj4Title;
+    if (p4Desc) p4Desc.textContent = translations[lang].proj4Desc;
+    if (p4Link) p4Link.innerHTML = '<i class="fab fa-github"></i> ' + translations[lang].projCode;
+  }
 }
 
 if (btnFR && btnEN) {
